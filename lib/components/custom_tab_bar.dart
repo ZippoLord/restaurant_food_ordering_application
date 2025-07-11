@@ -9,20 +9,25 @@ class CustomTabBar extends StatelessWidget {
     required this.tabController,
   });
 
-  List<Tab> _buildCategoryTabs() {
+    List<Tab> _buildCategoryTabs() {
     return FoodCategory.values.map((category) {
       return Tab(
-        text: category.toString().split('.').last,
+        child: Text(
+          category.toString().split('.').last,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        ),
       );
     }).toList();
   }
-
   @override
   Widget build(BuildContext context) {
     return Container(
       child: TabBar(
+        isScrollable: true,
         controller: tabController,
         tabs: _buildCategoryTabs(),
+        labelColor: Colors.red,
+        unselectedLabelColor: Colors.grey,
       ),
     );
   }

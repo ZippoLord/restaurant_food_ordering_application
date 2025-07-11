@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:food_order_app/models/restaurant.dart';
 import 'package:provider/provider.dart';
 import 'package:google_place/google_place.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+
 
 class AddressPicker extends StatefulWidget {
-  const AddressPicker({super.key});
+  AddressPicker({super.key});
+  final String apikey = dotenv.env['GOOGLE_API_KEY'] ?? 'default_key';
 
   @override
   State<AddressPicker> createState() => _AddressPickerState();
@@ -12,7 +16,13 @@ class AddressPicker extends StatefulWidget {
 
 class _AddressPickerState extends State<AddressPicker> {
   // REPLACE WITH OWN API KEY
-  final _googlePlace = GooglePlace("YOUR_OWN_GOOGLE_PLACE_API_KEY");
+ 
+  late GooglePlace _googlePlace;
+  @override
+  void initState() {
+    super.initState();
+    _googlePlace = GooglePlace(widget.apikey);
+  }
 
   void _showAddAddressDialog(BuildContext context) {
     final TextEditingController textController = TextEditingController();
@@ -26,7 +36,7 @@ class _AddressPickerState extends State<AddressPicker> {
             builder:
                 (context, setState) => AlertDialog(
                   title: const Text("Cím keresése"),
-                  content: Container(
+                  content: SizedBox(
                     width: double.maxFinite,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -244,7 +254,7 @@ class _AddressPickerState extends State<AddressPicker> {
             builder:
                 (context, setState) => AlertDialog(
                   title: const Text("Add meg a házszámot!"),
-                  content: Container(
+                  content: SizedBox(
                     width: double.maxFinite,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,

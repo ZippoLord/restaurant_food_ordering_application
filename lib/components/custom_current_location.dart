@@ -27,7 +27,7 @@ class CustomCurrentLocation extends StatelessWidget {
                 () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const AddressPicker(),
+                    builder: (context) =>  AddressPicker(),
                   ),
                 ),
             child: Row(

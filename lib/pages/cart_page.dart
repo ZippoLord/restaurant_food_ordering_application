@@ -4,7 +4,12 @@ import 'package:food_order_app/components/custom_cart_tile.dart';
 import 'package:food_order_app/models/restaurant.dart';
 import 'package:food_order_app/pages/address_picker_page.dart';
 import 'package:food_order_app/pages/payment_page.dart';
+import 'package:get/state_manager.dart';
 import 'package:provider/provider.dart';
+
+
+
+
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
@@ -15,11 +20,22 @@ class CartPage extends StatelessWidget {
       builder: (context, restaurant, child) {
         // cart
         final userCart = restaurant.cart;
+        
+        String calculateTotalPrice(Restaurant restaurant){
+        num total = 0;
+        for(final item in userCart){
+              final basePrice = item.food.price * item.quantity;
+              final addonTotal = item.selectedAddons.fold<num>(0.0, (sum, addon) => sum + (addon.price * item.quantity),);
+              total += basePrice + addonTotal;
+        }
+        return total.toStringAsFixed(0);
+      }
 
+        
         // scaffold UI
         return Scaffold(
           appBar: AppBar(
-            title: Text("Kosár"),
+            title: Text("Kosár: ${calculateTotalPrice(restaurant)} Ft"),
             backgroundColor: Colors.transparent,
             foregroundColor: Theme.of(context).colorScheme.inversePrimary,
             actions: [
@@ -94,6 +110,7 @@ class CartPage extends StatelessWidget {
                 ),
               ),
 
+
               // delivery address section
               if (userCart.isNotEmpty)
                 Padding(
@@ -117,7 +134,7 @@ class CartPage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const AddressPicker(),
+                              builder: (context) =>  AddressPicker(),
                             ),
                           );
                         },
@@ -202,7 +219,7 @@ class CartPage extends StatelessWidget {
                                         MaterialPageRoute(
                                           builder:
                                               (context) =>
-                                                  const AddressPicker(),
+                                                   AddressPicker(),
                                         ),
                                       );
                                     },

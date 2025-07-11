@@ -19,8 +19,9 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+    jvmTarget = "11"
     }
+
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
@@ -45,3 +46,4 @@ android {
 flutter {
     source = "../.."
 }
+

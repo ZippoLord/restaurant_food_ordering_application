@@ -17,7 +17,7 @@ class CustomCartTile extends StatelessWidget {
     return Consumer<Restaurant>(
       builder: (context, restaurant, child) => Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(8),
         ),
         margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
@@ -31,8 +31,8 @@ class CustomCartTile extends StatelessWidget {
                   // food image
                   ClipRRect(
                     borderRadius:BorderRadius.circular(8),
-                    child: Image.asset(
-                      cartItem.food.imagePath,
+                    child: Image.network(
+                      cartItem.food.imagePath!,
                       height: 100,
                       width: 100,
                     ),
@@ -53,6 +53,12 @@ class CustomCartTile extends StatelessWidget {
                           "${cartItem.food.price} Ft",
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                          Text(
+                          cartItem.food.description,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.inversePrimary,
                           ),
                         ),
                         
@@ -88,9 +94,9 @@ class CustomCartTile extends StatelessWidget {
                       children: [
 
                         // addon name
-                        Text(addon.name),
+                        Text(addon.name ?? ""),
 
-                        // addon price
+                        // addon priceR
                         Text(" (+${addon.price} Ft)"),
                       ],
                     ),
@@ -100,7 +106,7 @@ class CustomCartTile extends StatelessWidget {
                       )
                     ),
                     onSelected: (value) {},
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    backgroundColor: Theme.of(context).colorScheme.surface,
                     labelStyle: TextStyle(
                       color: Theme.of(context).colorScheme.inversePrimary,
                       fontSize: 12,

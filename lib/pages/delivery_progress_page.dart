@@ -19,8 +19,8 @@ class _DeliveryProgressPageState extends State<DeliveryProgressPage> {
   void initState() {
     super.initState();
 
-    // if we get to this page, submit order to firestore db
-    String receipt = context.read<Restaurant>().displayCartReceipt();
+    //if we get to this page, submit order to firestore db
+    List<Map<String, dynamic>> receipt = context.read<Restaurant>().addToDatabaseJson();
     db.saveOrderToDatabase(receipt);
   }
 

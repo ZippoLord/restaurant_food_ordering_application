@@ -10,10 +10,17 @@ class CartItem {
     required this.selectedAddons,
     this.quantity = 1,
   });
-
   int get totalPrice {
     int basePrice = food.price;
     int addonsPrice = selectedAddons.fold(0, (sum, addon) => sum + addon.price);
     return (basePrice + addonsPrice) * quantity;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'food': food.toJson(),
+      //'addons': selectedAddons.map((a) => a.toJson()).toList(),
+      'quantity': quantity,
+    };
   }
 }

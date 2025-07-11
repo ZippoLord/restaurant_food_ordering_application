@@ -1,181 +1,18 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:food_order_app/models/cart_item.dart';
+import 'package:food_order_app/pages/food_page.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'food.dart';
 
+
+
 class Restaurant extends ChangeNotifier {
   static const String _addressesKey = 'saved_addresses';
   static const String _currentAddressKey = 'current_address';
-
-  final List<Food> _menu = [
-    // burgers
-    Food(
-      name: "Classic Cheeseburger",
-      description:
-          "A juicy beef patty with melted cheddar, lettuce, tomato, and a hint of onion and pickle.",
-      imagePath: "lib/images/burgers/burger.png",
-      price: 2790,
-      foodCategory: FoodCategory.burgerek,
-      availableAddons: [
-        Addon(name: "Extra cheese", price: 150),
-        Addon(name: "Bacon", price: 350),
-        Addon(name: "Avocado", price: 200),
-      ],
-    ),
-
-    Food(
-      name: "Tomatonator",
-      description:
-          "A juicy beef patty with melted cheddar, lettuce, tomato, and a hint of onion and pickle.",
-      imagePath: "lib/images/burgers/burger.png",
-      price: 2490,
-      foodCategory: FoodCategory.burgerek,
-      availableAddons: [
-        Addon(name: "Extra cheese", price: 150),
-        Addon(name: "Bacon", price: 350),
-        Addon(name: "Avocado", price: 200),
-      ],
-    ),
-
-    Food(
-      name: "Burger",
-      description:
-          "A juicy beef patty with melted cheddar, lettuce, tomato, and a hint of onion and pickle.",
-      imagePath: "lib/images/burgers/burger.png",
-      price: 2390,
-      foodCategory: FoodCategory.burgerek,
-      availableAddons: [
-        Addon(name: "Extra cheese", price: 150),
-        Addon(name: "Bacon", price: 350),
-        Addon(name: "Avocado", price: 200),
-      ],
-    ),
-
-    // salads
-    Food(
-      name: "Caesar",
-      description:
-          "A juicy salad with yogurt, lettuce, tomato, and a hint of onion.",
-      imagePath: "lib/images/salads/salad.png",
-      price: 2990,
-      foodCategory: FoodCategory.salatak,
-      availableAddons: [
-        Addon(name: "Tomato", price: 150),
-        Addon(name: "Onion", price: 350),
-        Addon(name: "Lettuce", price: 200),
-      ],
-    ),
-
-    Food(
-      name: "Greek salad",
-      description:
-          "A juicy salad with yogurt, lettuce, tomato, and a hint of onion.",
-      imagePath: "lib/images/salads/salad.png",
-      price: 2490,
-      foodCategory: FoodCategory.salatak,
-      availableAddons: [
-        Addon(name: "Tomato", price: 150),
-        Addon(name: "Onion", price: 350),
-        Addon(name: "Lettuce", price: 200),
-      ],
-    ),
-
-    Food(
-      name: "Tuna salad",
-      description:
-          "A juicy salad with yogurt, lettuce, tomato, and a hint of onion.",
-      imagePath: "lib/images/salads/salad.png",
-      price: 3200,
-      foodCategory: FoodCategory.salatak,
-      availableAddons: [
-        Addon(name: "Tomato", price: 150),
-        Addon(name: "Onion", price: 350),
-        Addon(name: "Lettuce", price: 200),
-      ],
-    ),
-
-    // sides
-    Food(
-      name: "French fries",
-      description: "Some fries with seasoning.",
-      imagePath: "lib/images/sides/side.png",
-      price: 1290,
-      foodCategory: FoodCategory.koretek,
-      availableAddons: [
-        Addon(name: "Melted cheese", price: 150),
-        Addon(name: "Pepper", price: 350),
-        Addon(name: "Bacon", price: 200),
-      ],
-    ),
-
-    Food(
-      name: "Steak fries",
-      description: "Some steak fries with seasoning.",
-      imagePath: "lib/images/sides/side.png",
-      price: 1590,
-      foodCategory: FoodCategory.koretek,
-      availableAddons: [
-        Addon(name: "Melted cheese", price: 150),
-        Addon(name: "Pepper", price: 350),
-        Addon(name: "Bacon", price: 200),
-      ],
-    ),
-
-    Food(
-      name: "Croquette",
-      description: "Some croquettes with seasoning.",
-      imagePath: "lib/images/sides/side.png",
-      price: 1690,
-      foodCategory: FoodCategory.koretek,
-      availableAddons: [
-        Addon(name: "Melted cheese", price: 150),
-        Addon(name: "Pepper", price: 350),
-        Addon(name: "Bacon", price: 200),
-      ],
-    ),
-
-    // drinks
-    Food(
-      name: "Coke",
-      description: "Strawberry cake.",
-      imagePath: "lib/images/drinks/drink.png",
-      price: 750,
-      foodCategory: FoodCategory.italok,
-      availableAddons: [
-        Addon(name: "Melted cheese", price: 150),
-        Addon(name: "Pepper", price: 350),
-        Addon(name: "Bacon", price: 200),
-      ],
-    ),
-
-    Food(
-      name: "Ice tea",
-      description: "Strawberry cake.",
-      imagePath: "lib/images/drinks/drink.png",
-      price: 750,
-      foodCategory: FoodCategory.italok,
-      availableAddons: [
-        Addon(name: "Melted cheese", price: 150),
-        Addon(name: "Pepper", price: 350),
-        Addon(name: "Bacon", price: 200),
-      ],
-    ),
-    Food(
-      name: "Lemonade",
-      description: "Strawberry cake.",
-      imagePath: "lib/images/drinks/drink.png",
-      price: 750,
-      foodCategory: FoodCategory.italok,
-      availableAddons: [
-        Addon(name: "Melted cheese", price: 150),
-        Addon(name: "Pepper", price: 350),
-        Addon(name: "Bacon", price: 200),
-      ],
-    ),
-  ];
-
+  final controller = Get.find<CartController>();
   // user cart
   final List<CartItem> _cart = [];
 
@@ -194,7 +31,6 @@ class Restaurant extends ChangeNotifier {
   GETTERS
   */
 
-  List<Food> get menu => _menu;
   List<CartItem> get cart => _cart;
   List<String> get savedAddresses => _savedAddresses;
   String get deliveryAddress => _deliveryAddress;
@@ -203,30 +39,55 @@ class Restaurant extends ChangeNotifier {
   OPERATIONS
   */
 
+  
+
+      List<CartItem> addToCart(Food food, List<Addon> selectedAddons, {int quantity = 1}) {
+      
+        // see if there is a cart item already with the same food and addons selected
+        CartItem? cartItem = _cart.firstWhereOrNull((item) {
+          bool isSameFood = item.food == food;
+
+          bool isSameAddons = ListEquality().equals(
+            item.selectedAddons,
+            selectedAddons,
+          );
+          return isSameFood && isSameAddons;
+        });
+
+        // if item already exists, increase it's quantity
+        if (cartItem != null) {
+          cartItem.quantity += quantity;
+        }
+        // otherwise, add a new cart item to the cart
+        else {
+          _cart.add(CartItem(food: food, selectedAddons: selectedAddons, quantity: quantity));
+        }
+        controller.cartItem.value = _cart.fold(0, (sum, item) => sum + item.quantity);
+        controller.update();
+        //print("Cartitem: ${controller.cartItem}");
+        controller.resetQuantityToItems();
+        notifyListeners();
+        //print(_cart.map((e) => e.toJson()).toList());
+        return _cart;
+      }
+  
   // add to cart
-  void addToCart(Food food, List<Addon> selectedAddons) {
-    // see if there is a cart item already with the same food and addons selected
-    CartItem? cartItem = _cart.firstWhereOrNull((item) {
-      bool isSameFood = item.food == food;
+  // remove from cart
+  void addItemToCart(CartItem cartItem) {
+    int cartIndex = _cart.indexOf(cartItem);
 
-      bool isSameAddons = ListEquality().equals(
-        item.selectedAddons,
-        selectedAddons,
-      );
-
-      return isSameFood && isSameAddons;
-    });
-
-    // if item already exists, increase it's quantity
-    if (cartItem != null) {
-      cartItem.quantity++;
-    }
-    // otherwise, add a new cart item to the cart
-    else {
-      _cart.add(CartItem(food: food, selectedAddons: selectedAddons));
+    if (cartIndex != -1) {
+      if (_cart[cartIndex].quantity > 1) {
+        _cart[cartIndex].quantity++;
+        controller.cartItem.value= _cart.fold(0, (sum, item) => sum + item.quantity);
+        controller.update();
+      } else {
+        _cart.removeAt(cartIndex);
+      }
     }
     notifyListeners();
   }
+
 
   // remove from cart
   void removeFromCart(CartItem cartItem) {
@@ -238,6 +99,8 @@ class Restaurant extends ChangeNotifier {
       } else {
         _cart.removeAt(cartIndex);
       }
+        controller.cartItem.value = _cart.fold(0, (sum, item) => sum + item.quantity);
+        controller.update();
     }
     notifyListeners();
   }
@@ -249,9 +112,9 @@ class Restaurant extends ChangeNotifier {
     for (CartItem cartItem in _cart) {
       int itemTotal = cartItem.food.price;
 
-      for (Addon addon in cartItem.selectedAddons) {
-        itemTotal += addon.price;
-      }
+        for (Addon addon in cartItem.selectedAddons) {
+          itemTotal += addon.price;
+        }
 
       total += itemTotal * cartItem.quantity;
     }
@@ -273,6 +136,8 @@ class Restaurant extends ChangeNotifier {
   // clear cart
   void clearCart() {
     _cart.clear();
+    controller.cartItem.value = 0;
+    controller.update();
     notifyListeners();
   }
 
@@ -346,60 +211,87 @@ class Restaurant extends ChangeNotifier {
     }
   }
 
+
+
+
   /*
   HELPERS
   */
+ String displayCartReceipt()
+ {
+   //generate a receipt
+  
+      final receipt = StringBuffer();
+      receipt.writeln("Nyugta\n");
 
-  // generate a receipt
-  String displayCartReceipt() {
-    final receipt = StringBuffer();
-    receipt.writeln("Nyugta\n");
+      // format date
+      String formattedDate = DateFormat(
+        'yyyy-MM-dd HH:mm:ss',
+      ).format(DateTime.now());
 
-    // format date
-    String formattedDate = DateFormat(
-      'yyyy-MM-dd HH:mm:ss',
-    ).format(DateTime.now());
-
-    receipt.writeln("$formattedDate");
-    receipt.writeln();
-    receipt.writeln(
-      "------------------------------------------------------------",
-    );
-    receipt.writeln();
-
-    for (final cartItem in _cart) {
-      receipt.writeln(
-        "${cartItem.quantity} x ${cartItem.food.name} - ${_formatPrice(cartItem.food.price)}\n",
-      );
-
-      if (cartItem.selectedAddons.isNotEmpty) {
-        receipt.writeln(
-          "   Add-ons:\n   ${_formatAddons(cartItem.selectedAddons)}",
-        );
-      }
+      receipt.writeln(formattedDate);
       receipt.writeln();
+      receipt.writeln(
+        "------------------------------------------------------------",
+      );
+      receipt.writeln();
+
+      for (final cartItem in _cart) {
+        receipt.writeln(
+          "${cartItem.quantity} x ${cartItem.food.name} - ${_formatPrice(cartItem.food.price)}\n",
+        );
+
+        if (cartItem.selectedAddons.isNotEmpty) {
+          receipt.writeln(
+            "   Add-ons:\n   ${_formatAddons(cartItem.selectedAddons)}",
+          );
+        }
+        receipt.writeln();
+      }
+
+      receipt.writeln(
+        "------------------------------------------------------------",
+      );
+      receipt.writeln();
+      receipt.writeln("Tételek száma: ${getTotalItemCount()}\n");
+      receipt.writeln("Teljes ár: ${_formatPrice(getTotalPrice())}\n");
+      receipt.writeln("Szállítási cím: $deliveryAddress\n");
+
+      addToDatabaseJson();
+      return receipt.toString();
     }
 
-    receipt.writeln(
-      "------------------------------------------------------------",
-    );
-    receipt.writeln();
-    receipt.writeln("Tételek száma: ${getTotalItemCount()}\n");
-    receipt.writeln("Teljes ár: ${_formatPrice(getTotalPrice())}\n");
-    receipt.writeln("Szállítási cím: $deliveryAddress\n");
+    // format money
+    String _formatPrice(int price) {
+      return "$price Ft";
+    }
 
-    return receipt.toString();
+    // format list of addons
+    String _formatAddons(List<Addon> addons) {
+      return addons
+          .map((addon) => "${addon.name} (${_formatPrice(addon.price)})")
+          .join(", ");
+    }
+ 
+   
+    List<Map<String, dynamic>> addToDatabaseJson() {
+      try{
+        final jsonList = _cart.map((e) => e.toJson()).toList();
+        print("Itt vannak az adatok $jsonList");
+        return jsonList;
+      }
+      catch(e)
+      {
+        print("Hiba tortent $e");
+        return [];
+      }
   }
 
-  // format money
-  String _formatPrice(int price) {
-    return "$price Ft";
-  }
 
-  // format list of addons
-  String _formatAddons(List<Addon> addons) {
-    return addons
-        .map((addon) => "${addon.name} (${_formatPrice(addon.price)})")
-        .join(", ");
-  }
 }
+ 
+ 
+
+
+
+

@@ -53,18 +53,28 @@ class FoodTile extends StatelessWidget {
                 // food image
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.asset(food.imagePath, height: 120),
+                  child:Image.network(
+                  food.imagePath,
+                  height: 120, 
+                  width: 120,
+                  fit: BoxFit.cover, 
+                  loadingBuilder:
+                   (context, child, loadingProgress) 
+                   {
+                      if(loadingProgress == null) return child; 
+                      return SizedBox(height: 80, width: 80, child: Center(child: CircularProgressIndicator()));
+                   },
+                   errorBuilder: (context, error, StackTrace) => Container(
+                    height: 120,
+                    width: 120,
+                    color: Colors.grey[200],
+                    child: Icon(Icons.broken_image),
+                   ),
+                  ) 
                 ),
               ],
             ),
           ),
-        ),
-
-        // divider line
-        Divider(
-          color: Theme.of(context).colorScheme.tertiary,
-          indent: 25,
-          endIndent: 25,
         ),
       ],
     );
