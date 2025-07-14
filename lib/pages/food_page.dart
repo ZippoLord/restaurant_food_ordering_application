@@ -7,7 +7,7 @@ import 'package:food_order_app/dimensions.dart';
 import 'package:food_order_app/pages/cart_page.dart';
 import 'package:food_order_app/widgets/addon_column.dart';
 import 'package:food_order_app/widgets/app_column.dart';
-import 'package:food_order_app/widgets/expendable_text_wigdet.dart';
+import 'package:food_order_app/widgets/expendable_text_widget.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
@@ -18,13 +18,11 @@ class CartController extends GetxController{
 
     void addQuantityToItem(){
       selectedItems++;
-      print("incremented ${selectedItems}");
       update();
     }
     void removeQuantityToItem(){
       if(selectedItems > 0) 
       selectedItems--; 
-      print("decremented ${selectedItems}");
       update();
     }
 
@@ -33,8 +31,6 @@ class CartController extends GetxController{
     }
 
 }
-
-
 
 class FoodPage extends StatefulWidget {
   final Food food;
@@ -79,7 +75,7 @@ class _FoodPageState extends State<FoodPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    backgroundColor: Colors.white,
+    backgroundColor: Theme.of(context).colorScheme.surface,
       body: Stack(
         children: [
           Positioned(
@@ -109,7 +105,7 @@ class _FoodPageState extends State<FoodPage> {
                   padding: const EdgeInsets.all(1),
                   shape: const CircleBorder()
                 ),
-                child:const AppIcon(icon: Icons.arrow_back_ios),
+                child:const AppIcon(icon: Icons.arrow_back_ios ),
               ),
               GetBuilder<CartController>(builder: (controller){
                 return Stack(
@@ -156,7 +152,7 @@ class _FoodPageState extends State<FoodPage> {
                   topRight: Radius.circular(Dimensions.radius20),
                   topLeft: Radius.circular(Dimensions.radius20)
                 ),
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
               ),
               child: SingleChildScrollView(
                child: Column(
@@ -186,7 +182,7 @@ class _FoodPageState extends State<FoodPage> {
         height: Dimensions.bottomHeightBar,
         padding: EdgeInsets.only(top:Dimensions.height20, bottom: Dimensions.width20, left: Dimensions.width20, right: Dimensions.width20),
         decoration: BoxDecoration(
-          color: Colors.white, 
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(Dimensions.radius20*2),
             topRight: Radius.circular(Dimensions.radius20*2),
@@ -199,7 +195,7 @@ class _FoodPageState extends State<FoodPage> {
               padding: EdgeInsets.only(top: Dimensions.height20, bottom: Dimensions.height20, right: Dimensions.width20),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(Dimensions.radius20),
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
               ),
               child: Row(
                 children: [
@@ -230,12 +226,18 @@ class _FoodPageState extends State<FoodPage> {
             InkWell(
               onTap: (){
                 final controller = Get.find<CartController>();
+                final String snackbarString;
                 if(controller.selectedItems == 0){
+                   snackbarString =  'Adj meg egy mennyiséget! 🙄';
+                } else {
+                   addToCart(widget.food, widget.selectedAddons);
+                   snackbarString = "${widget.food.name} hozzáadva a kosaradhoz 😋";
+                };
                    ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     dismissDirection: DismissDirection.up,
                     behavior: SnackBarBehavior.floating,
-                    backgroundColor: Colors.red[200],
+                    backgroundColor: Theme.of(context).colorScheme.surface,
                     margin: EdgeInsets.only(
                       bottom: MediaQuery.of(context).size.height-270,
                       left: Dimensions.width10,
@@ -246,32 +248,11 @@ class _FoodPageState extends State<FoodPage> {
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     },
                     child:  
-                    Text(style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w500), 
-                    'Adj meg egy mennyiséget! 🙄'),
+                    Text(snackbarString, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w500),
                   ))
-                );
+                ),
+               );
                   return;
-                } 
-                addToCart(widget.food, widget.selectedAddons); 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    dismissDirection: DismissDirection.up,
-                    behavior: SnackBarBehavior.floating,
-                    backgroundColor: Colors.red[200],
-                    margin: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).size.height-270,
-                      left: Dimensions.width10,
-                      right: Dimensions.width10,
-                    ),
-                    content: InkWell(
-                    onTap: (){
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    },
-                    child:  
-                    Text(style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w500), 
-                    '${widget.food.name} hozzáadva a kosaradhoz 😋'),
-                  ))
-                );
               },
               child: 
               Container(

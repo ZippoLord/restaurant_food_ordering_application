@@ -54,7 +54,8 @@ enum FoodCategory {
   salatak,
   koretek,
   italok,
-  pizzak;
+  pizzak,
+  menuk,
 }
 
 FoodCategory categoryFromString(String value) {
@@ -78,6 +79,8 @@ extension FoodCategoryExtension on FoodCategory {
         return "Italok";
       case FoodCategory.pizzak:
         return "Pizzák";
+       case FoodCategory.menuk:
+        return "Menük";
     }
   }
 }

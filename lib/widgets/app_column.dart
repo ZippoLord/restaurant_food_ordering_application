@@ -38,9 +38,9 @@ class AppColumn extends StatelessWidget {
                     Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconAndTextWidget(iconColor:Colors.amber, icon: Icons.circle_sharp, text: "Normal"),
-                      IconAndTextWidget(iconColor:Colors.green, icon: Icons.location_on, text: "1.7km"),
-                      IconAndTextWidget(iconColor:Colors.red, icon: Icons.access_time_rounded, text: "32perc")
+                      IconAndTextWidget(iconColor:Colors.amber, icon: Icons.circle_sharp, text: "Normal", textColor: Theme.of(context).colorScheme.inversePrimary,),
+                      IconAndTextWidget(iconColor:Colors.green, icon: Icons.location_on, text: "1.7km", textColor: Theme.of(context).colorScheme.inversePrimary),
+                      IconAndTextWidget(iconColor:Colors.red, icon: Icons.access_time_rounded, text: "32 perc", textColor: Theme.of(context).colorScheme.inversePrimary)
                     ],
                    ),
                   )

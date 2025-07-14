@@ -12,11 +12,11 @@ ThemeData darkMode = ThemeData(
     //primary secondary text
     inversePrimary: Color(0xFFFFFFFF),
 
-    //BellowMain
+    //BellowMaintheme
     secondary: Color(0xFF2D1E30),
     
     tertiary: Color(0xFF3A2B3D),
     
     
-  ),
+  )
 );  

@@ -54,7 +54,7 @@ class CustomAppBar extends StatelessWidget {
 
       const SizedBox(width: 12),
 
-      // Dark mode váltó
+      // Dark m váltó
       Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) => CupertinoSwitch(
           value: themeProvider.isDarkMode,
