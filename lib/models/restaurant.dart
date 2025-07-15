@@ -42,7 +42,6 @@ class Restaurant extends ChangeNotifier {
   
 
       List<CartItem> addToCart(Food food, List<Addon> selectedAddons, {int quantity = 1}) {
-      
         // see if there is a cart item already with the same food and addons selected
         CartItem? cartItem = _cart.firstWhereOrNull((item) {
           bool isSameFood = item.food == food;

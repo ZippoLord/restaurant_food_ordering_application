@@ -1,14 +1,73 @@
 import 'package:flutter/material.dart';
+import 'package:food_order_app/components/custom_current_location.dart';
+import 'package:food_order_app/components/custom_drawer.dart';
 import 'package:food_order_app/constants.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:food_order_app/controllers/user_location_controller.dart';
+import 'package:food_order_app/models/restaurant.dart';
+import 'package:food_order_app/pages/address_picker_page.dart';
 import 'package:food_order_app/themes/theme_provider.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_place/google_place.dart';
 import 'package:provider/provider.dart';
 
-class CustomAppBar extends StatelessWidget {
+class CustomAppBar extends StatefulWidget {
   const CustomAppBar({super.key});
 
   @override
+  State<CustomAppBar> createState() => _CustomAppBarState();
+}
+
+class _CustomAppBarState extends State<CustomAppBar> {
+
+  Future<void> _getCurrentLocation() async{
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if(!serviceEnabled){
+      print("helymeghatarozas ki van kapcsolva");
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if(permission == LocationPermission.denied){
+      permission = await Geolocator.requestPermission();
+    }
+    if(permission == LocationPermission.denied){ 
+      print('Helyhozzaferes megtagadva');
+      return;
+    }
+
+    try{
+      final controller = Get.put(UserLocationController());
+      Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.best);
+      LatLng currentLocation = LatLng(position.latitude, position.longitude);
+      controller.setPosition(currentLocation);
+      controller.getUserAddress(currentLocation);
+
+    print(currentLocation);
+    }catch(e){
+      print("valami hiba tortent ${e}");
+    }
+    
+  } 
+
+
+  @override
+  void initState(){
+    super.initState();
+    _getCurrentLocation();
+  }
+
+  @override
   Widget build(BuildContext context) {
+  final controller = Get.put(UserLocationController());
+
    return Container(
   height: 110,
   color: Theme.of(context).colorScheme.surface,
@@ -16,12 +75,19 @@ class CustomAppBar extends StatelessWidget {
   child: Row(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
-      
-      CircleAvatar(
-        radius: 25,
-        backgroundColor: Colors.amberAccent,
-        child: Icon(Icons.person, color: Colors.white),
-      ),
+     Builder(
+  builder: (context) => InkWell(
+    onTap: () {
+      Scaffold.of(context).openDrawer(); 
+    },
+    child: CircleAvatar(
+      radius: 25,
+      backgroundColor: Colors.amberAccent,
+      child: Icon(Icons.person, color: Colors.white),
+    ),
+  ),
+),
+     
 
       const SizedBox(width: 12),
 
@@ -32,7 +98,7 @@ class CustomAppBar extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Szállítás",
+              "Tartózkodási hely",
               style: TextStyle(
                 color: Colors.orange,
                 fontSize: 13,
@@ -40,14 +106,13 @@ class CustomAppBar extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 4),
-            Text(
-              "Ide jön a szállítási cím",
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.inversePrimary,
-                fontSize: 12,
-              ),
-            ),
+            Obx(
+              () => SizedBox(
+              width: 500 * 0.65,
+              child: Text(controller.address == "" ? "Dummy address" : controller.address,
+              overflow: TextOverflow.ellipsis,),
+            ))
+           
           ],
         ),
       ),

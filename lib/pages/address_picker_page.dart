@@ -15,7 +15,6 @@ class AddressPicker extends StatefulWidget {
 }
 
 class _AddressPickerState extends State<AddressPicker> {
-  // REPLACE WITH OWN API KEY
  
   late GooglePlace _googlePlace;
   @override

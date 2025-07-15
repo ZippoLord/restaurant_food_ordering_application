@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_order_app/components/custom_drawer.dart';
 import 'package:food_order_app/components/custom_food_tile.dart';
 import 'package:food_order_app/models/food.dart';
 import 'package:food_order_app/models/restaurant.dart';
@@ -54,18 +55,20 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       List<Food> categoryMenu = _menu.where((f) => f.foodCategory == category).toList();
       return Container(
         color: Theme.of(context).colorScheme.surface,
-        child: ListView.builder(
-          itemCount: categoryMenu.length,
-          itemBuilder: (context, index) {
-            final food = categoryMenu[index];
-            return FoodTile(
-              food: food,
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FoodPage(food: food)),
-              ),
-            );
-          },
+        child: SizedBox(
+          child: ListView.builder(
+            itemCount: categoryMenu.length,
+            itemBuilder: (context, index) {
+              final food = categoryMenu[index];
+              return FoodTile(
+                food: food,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FoodPage(food: food)),
+                ),
+              );
+            },
+          ),
         ),
       );
     }).toList();
@@ -85,6 +88,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       );
     }
     return Scaffold(
+      drawer: const MyDrawer(),
       backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(130),
@@ -94,7 +98,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         child: CustomContainer(containerContent: 
          Column(
           children: [
-            AppBar(elevation: 0.3, title: const Text("Közeli éttermek"),),
+            
             const Restaurants(mockMode: true,),
             CategoryList(
               categories: _usedCategories,

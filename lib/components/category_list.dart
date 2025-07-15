@@ -34,21 +34,21 @@ class CategoryList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Theme.of(context).colorScheme.surface,
-      height: 80.h,
-      padding: EdgeInsets.only(left: 12.w, top: 10.h),
+      height: 100.h,
+      padding: EdgeInsets.only(left: 10.w, top: 10.h),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
         itemBuilder: (context, i) {
           final category = categories[i];
           final isSelected = i == selectedIndex;
-
+    
           return GestureDetector(
             onTap: () => tabController.animateTo(i),
             child: Container(
-              width: 70.w,
+              width: 80.w,
               margin: EdgeInsets.only(right: 10.w),
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
               decoration: BoxDecoration(
                 color: isSelected ? Colors.red.withOpacity(0.1) : Colors.transparent,
                 borderRadius: BorderRadius.circular(10.r),
@@ -58,6 +58,7 @@ class CategoryList extends StatelessWidget {
                 // ),
               ),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
                     height: 35.h,
@@ -69,6 +70,7 @@ class CategoryList extends StatelessWidget {
                   SizedBox(height: 4),
                   Text(
                     category.displayName,
+                    maxLines: 1,
                     style: TextStyle(
                       color: isSelected ? Theme.of(context).colorScheme.inversePrimary : Theme.of(context).colorScheme.primary,
                       fontSize: 12,

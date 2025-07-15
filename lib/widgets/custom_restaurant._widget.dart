@@ -17,7 +17,7 @@ class RestaurantWidget extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.only(right: 12.w),
         child: Container(
-          width: 450*.75,
+          width: 450.w*.75,
           height: 200.h,
           decoration:BoxDecoration(
           borderRadius: BorderRadius.circular(12.r),
@@ -33,7 +33,7 @@ class RestaurantWidget extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12.r),
                     child: SizedBox(
-                        width: 500*.75,
+                        width: 500.w*.75,
                         height: 150.h,
                       child: Image.asset(image, fit: BoxFit.fill,),
                     ),
@@ -42,14 +42,14 @@ class RestaurantWidget extends StatelessWidget {
                     right: 10.w,
                     top: 10.h,
                     child: ClipRect(
-
+        
                     ),
                   )
                 ],
               ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                padding: EdgeInsets.symmetric(horizontal: 10.w,),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -58,7 +58,6 @@ class RestaurantWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                   openNow ? Text("Nyitva", style: TextStyle(color: Colors.green),) :Text("Zárva", style: TextStyle(color: Colors.red),),
-                  // | Nyitvatartási idő:", style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.primary),), 
                   Text("H-P 8:00 - 18:00", style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500,  color: Theme.of(context).colorScheme.inversePrimary),)
                     ],
                   ),

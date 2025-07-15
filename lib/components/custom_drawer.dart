@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:food_order_app/components/custom_drawer_tile.dart';
+import 'package:food_order_app/components/custom_shipping_address.dart';
 import 'package:food_order_app/pages/settings_page.dart';
 import 'package:food_order_app/services/auth/auth_service.dart';
+import 'package:get/get.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -39,6 +41,15 @@ class MyDrawer extends StatelessWidget {
                 text: "Főoldal",
                 icon: Icons.home,
                 onTap: () => Navigator.pop(context),
+              ),
+               CustomDrawerTile(
+                text: "Szállítási cím",
+                icon: Icons.delivery_dining,
+                onTap: () {
+                  Get.to(() => const ShippingAddress(),
+                  transition: Transition.rightToLeft,
+                  duration: const Duration(milliseconds: 400));
+                },
               ),
               CustomDrawerTile(
                 text: "Beállítások",

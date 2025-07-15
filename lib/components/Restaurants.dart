@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:food_order_app/config.dart';
+import 'package:food_order_app/widgets/app_column.dart';
 import 'package:food_order_app/widgets/custom_restaurant._widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
@@ -69,7 +70,7 @@ class _RestaurantsState extends State<Restaurants> {
       final position = await _getCurrentPosition();
       final lat = position.latitude;
       final lng = position.longitude;
-      final apiKey = dotenv.env['GOOGLE_API_KEY'];
+      final apiKey = AppConfig.apiKey;
 
       final url = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?'
@@ -110,24 +111,42 @@ class _RestaurantsState extends State<Restaurants> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 210.h,
+      height: 300.h,
       color: Theme.of(context).colorScheme.surface,
       padding: EdgeInsets.only(left: 12.w, top: 10.h),
       child: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: restaurants.length,
-              itemBuilder: (context, i) {
-                final restaurant = restaurants[i];
-                return RestaurantWidget(
-                  image: restaurant['imageUrl'],
-                  name: restaurant['name'],
-                  location: restaurant['vicinity'],
-                  openNow: restaurant['openNow'],
-                );
-              },
-            ),
+          : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+                  Padding(
+                padding: EdgeInsets.only(bottom: 8.h),
+                child: Text(
+                  "Közeli éttermek",
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: restaurants.length,
+                    itemBuilder: (context, i) {
+                      final restaurant = restaurants[i];
+                      return RestaurantWidget(
+                        image: restaurant['imageUrl'],
+                        name: restaurant['name'],
+                        location: restaurant['vicinity'],
+                        openNow: restaurant['openNow'],
+                      );
+                    },
+                  ),
+              ),
+            ],
+          ),
     );
   }
 }
