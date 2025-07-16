@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_order_app/components/custom_drawer.dart';
 import 'package:food_order_app/components/custom_food_tile.dart';
 import 'package:food_order_app/models/food.dart';
@@ -8,6 +9,7 @@ import 'package:food_order_app/services/database/firestore.dart';
 import 'package:food_order_app/components/category_list.dart';
 import 'package:food_order_app/widgets/custom_appbar.dart';
 import 'package:food_order_app/widgets/custom_container.dart';
+import 'package:food_order_app/widgets/sliver_tab_bar.dart';
 import 'package:food_order_app/components/Restaurants.dart';
 import 'package:lottie/lottie.dart';
 
@@ -91,27 +93,37 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       drawer: const MyDrawer(),
       backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(130),
+        preferredSize: const Size.fromHeight(120),
         child: const CustomAppBar(),
       ),
       body: SafeArea(
-        child: CustomContainer(containerContent: 
-         Column(
-          children: [
-            
-            const Restaurants(mockMode: true,),
-            CategoryList(
-              categories: _usedCategories,
-              tabController: _tabController,
-              selectedIndex: _tabController.index,
-            ),
-            Expanded(
-              child: TabBarView(
+        child: CustomContainer(
+          containerContent: DefaultTabController(
+            length: _usedCategories.length,
+            child: NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsSchrolled) => [
+                SliverToBoxAdapter(
+                  child: const Restaurants(mockMode: true,),
+                ),
+                SliverPersistentHeader( 
+                  pinned: true,
+                  delegate: SliverTabBarDelegate(
+                    child: SizedBox(
+                      height: 80.h,
+                      child: CategoryList(
+                        categories: _usedCategories,
+                        tabController: _tabController,
+                        selectedIndex: _tabController.index,
+                      ),
+                    ),
+                  ),
+                )
+              ],
+              body: TabBarView(
                 controller: _tabController,
                 children: getFoodInThisCategory(),
-              ),
             ),
-          ],
+          ),
         ),)
       ),
     );

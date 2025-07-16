@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:food_order_app/components/custom_current_location.dart';
-import 'package:food_order_app/components/custom_drawer.dart';
-import 'package:food_order_app/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:food_order_app/controllers/user_location_controller.dart';
-import 'package:food_order_app/models/restaurant.dart';
-import 'package:food_order_app/pages/address_picker_page.dart';
 import 'package:food_order_app/themes/theme_provider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_place/google_place.dart';
 import 'package:provider/provider.dart';
 
 class CustomAppBar extends StatefulWidget {
@@ -46,7 +40,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
       final controller = Get.put(UserLocationController());
       Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.best);
-      LatLng currentLocation = LatLng(position.latitude, position.longitude);
+      LatLng currentLocation = LatLng(47.677, 18.6793); //TODO: LEHET CSAK AZ EMULATORBA NEM MUKODIK (nem a pontos poziciot keri le) position.latitude positiion.longitude
+      //print("✅ currenmt location ${currentLocation}");
       controller.setPosition(currentLocation);
       controller.getUserAddress(currentLocation);
 
@@ -61,7 +56,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   @override
   void initState(){
     super.initState();
-    _getCurrentLocation();
+    //_getCurrentLocation();
   }
 
   @override

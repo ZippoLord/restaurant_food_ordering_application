@@ -6,6 +6,20 @@ import 'package:google_place/google_place.dart';
 import 'package:http/http.dart' as http;
 
 class UserLocationController extends GetxController{
+  RxBool _isDefault = false.obs;
+  RxInt _tabIndex = 0.obs;
+
+  bool get isDefault =>_isDefault.value;
+  int get tabIndex => _tabIndex.value;
+
+  set setisDefault(bool value){
+    _isDefault.value = value;
+  }
+
+  set setTabIndex(int value)
+  {
+    _tabIndex.value = value;
+  }
   LatLng position = const LatLng(0, 0);
 
   void setPosition(LatLng value){
@@ -29,11 +43,9 @@ class UserLocationController extends GetxController{
   } 
 
   void getUserAddress(LatLng position) async{
-    final String lat = '47.6689506';
-    final String long = '18.682617800000003';
     final apiKey = AppConfig.apiKey;
     final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$apiKey',
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$apiKey&region=HU&language=hu',
     );
     final response = await http.get(url);
 

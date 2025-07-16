@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_order_app/config.dart';
-import 'package:food_order_app/widgets/app_column.dart';
 import 'package:food_order_app/widgets/custom_restaurant._widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
@@ -73,8 +72,7 @@ class _RestaurantsState extends State<Restaurants> {
       final apiKey = AppConfig.apiKey;
 
       final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?'
-        'location=$lat,$lng&radius=1500&type=restaurant&key=$apiKey',
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$lat,$lng&radius=1500&type=restaurant&key=$apiKey&region=HU&language=hu',
       );
 
       final response = await http.get(url);
@@ -87,7 +85,7 @@ class _RestaurantsState extends State<Restaurants> {
             return {
               'name': r['name'],
               'vicinity': r['vicinity'],
-              'imageUrl': 'lib/images/pizzas/pizzeria.jpg', // vagy r['icon']
+              'imageUrl': 'lib/images/pizzas/pizzeria.jpg', 
               'openNow': r['opening_hours']?['open_now'] ?? false,
             };
           }).toList();
@@ -111,7 +109,7 @@ class _RestaurantsState extends State<Restaurants> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300.h,
+      height: 250.h,
       color: Theme.of(context).colorScheme.surface,
       padding: EdgeInsets.only(left: 12.w, top: 10.h),
       child: isLoading

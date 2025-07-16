@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_order_app/components/app_icon.dart';
+import 'package:food_order_app/controllers/tab_controller.dart';
 import 'package:food_order_app/models/cart_item.dart';
 import 'package:food_order_app/models/food.dart';
 import 'package:food_order_app/models/restaurant.dart';
@@ -112,8 +113,9 @@ class _FoodPageState extends State<FoodPage> {
                   children: [
                   GestureDetector(
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const CartPage()),
-                      );
+                      Navigator.pop(context);
+                      final tabController = Get.find<currentTabController>();
+                      tabController.setTabIndex = 1;
                     },
                     child:AppIcon(icon: Icons.shopping_cart_outlined), 
                   ),
@@ -237,7 +239,7 @@ class _FoodPageState extends State<FoodPage> {
                   SnackBar(
                     dismissDirection: DismissDirection.up,
                     behavior: SnackBarBehavior.floating,
-                    backgroundColor: Theme.of(context).colorScheme.surface,
+                    backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                     margin: EdgeInsets.only(
                       bottom: MediaQuery.of(context).size.height-270,
                       left: Dimensions.width10,
@@ -248,7 +250,7 @@ class _FoodPageState extends State<FoodPage> {
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     },
                     child:  
-                    Text(snackbarString, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w500),
+                    Text(snackbarString, style: TextStyle(color: Theme.of(context).colorScheme.tertiary, fontSize: 20, fontWeight: FontWeight.w500),
                   ))
                 ),
                );

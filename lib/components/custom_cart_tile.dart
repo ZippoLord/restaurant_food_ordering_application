@@ -20,7 +20,7 @@ class CustomCartTile extends StatelessWidget {
           color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(8),
         ),
-        margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Column(
           children: [
             Padding(
@@ -28,31 +28,35 @@ class CustomCartTile extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // food image
                   ClipRRect(
-                    borderRadius:BorderRadius.circular(8),
+                    borderRadius:BorderRadius.circular(20),
                     child: Image.network(
-                      cartItem.food.imagePath!,
+                      cartItem.food.imagePath,
                       height: 100,
                       width: 100,
                     ),
                   ),
-              
                   const SizedBox(width: 10),
-              
-                  // name and price
+
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // food name
-                        Text(cartItem.food.name),
-                                  
-                        // food price
-                        Text(
-                          "${cartItem.food.price} Ft",
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
+                        Text(cartItem.food.name, style: TextStyle(fontWeight: FontWeight.w500)),
+                        Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: Container(
+                            padding: EdgeInsets.all(5),
+                             decoration: BoxDecoration(
+                             color: Theme.of(context).colorScheme.primary,
+                            borderRadius: BorderRadius.circular(10)
+                             ),
+                            child: Text(
+                              "${cartItem.food.price} Ft",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.inversePrimary,
+                              ),
+                            ),
                           ),
                         ),
                           Text(
@@ -86,7 +90,7 @@ class CustomCartTile extends StatelessWidget {
               height: cartItem.selectedAddons.isEmpty ? 0 : 60,
               child: ListView(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.only(left: 10, bottom: 10, right: 10),
+                padding: const EdgeInsets.all(10),
                 children: cartItem.selectedAddons.map(
                   (addon) => FilterChip(
                     padding: const EdgeInsets.only(right: 8.0),
