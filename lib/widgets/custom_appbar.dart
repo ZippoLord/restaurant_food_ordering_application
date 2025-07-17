@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_order_app/controllers/user_location_controller.dart';
 import 'package:food_order_app/themes/theme_provider.dart';
 import 'package:geolocator/geolocator.dart';
@@ -40,7 +41,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
       final controller = Get.put(UserLocationController());
       Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.best);
-      LatLng currentLocation = LatLng(47.677, 18.6793); //TODO: LEHET CSAK AZ EMULATORBA NEM MUKODIK (nem a pontos poziciot keri le) position.latitude positiion.longitude
+      LatLng currentLocation = LatLng(position.latitude, position.longitude); //TODO: LEHET CSAK AZ EMULATORBA NEM MUKODIK (nem a pontos poziciot keri le) position.latitude positiion.longitude
       //print("✅ currenmt location ${currentLocation}");
       controller.setPosition(currentLocation);
       controller.getUserAddress(currentLocation);
@@ -56,17 +57,17 @@ class _CustomAppBarState extends State<CustomAppBar> {
   @override
   void initState(){
     super.initState();
-    //_getCurrentLocation();
+    //_getCurrentLocation();   <- Kell a helymeghatarozashoz. Enelkul nem mukodik semmilyen resze
   }
 
   @override
   Widget build(BuildContext context) {
   final controller = Get.put(UserLocationController());
 
-   return Container(
-  height: 110,
+  return Container(
+  height: 140.h,
   color: Theme.of(context).colorScheme.surface,
-  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
   child: Row(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [

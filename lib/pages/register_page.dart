@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:food_order_app/services/auth/auth_service.dart';
+import 'package:food_order_app/widgets/snackbar.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import '../components/custom_button.dart';
 import '../components/custom_textfield.dart';
 
@@ -19,7 +22,6 @@ class RegisterPageState extends State<RegisterPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
-
   // register method
   void register() async {
     // get auth service
@@ -29,7 +31,7 @@ class RegisterPageState extends State<RegisterPage> {
     if (passwordController.text == confirmPasswordController.text) {
       // try creating user
       try {
-        await authService.signUpWithEmailPassword(emailController.text, passwordController.text,);
+        await authService.registrationFirebase(emailController.text, passwordController.text,);
       }
 
       // display any errors
@@ -45,12 +47,7 @@ class RegisterPageState extends State<RegisterPage> {
 
     // if passwords don't match -> show error
     else {
-      showDialog(
-        context: context,
-        builder: (context) => const AlertDialog(
-          title: Text("The passwords don't match"),
-        ),
-      );
+      showAppSnackbar('A jelszavak nem egyeznek');
     }
   }
 

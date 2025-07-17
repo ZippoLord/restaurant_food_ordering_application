@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_collection_literals, sort_child_properties_last
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:food_order_app/config.dart';
 import 'package:flutter/material.dart';
@@ -134,15 +136,15 @@ class _ShippingAddressState extends State<ShippingAddress> {
           ),
         ),
         actions: [
-          Obx(() => locationController.tabIndex == 1? 
+          Obx(() => locationController.tabIndex >= 2? 
             const SizedBox.shrink() : Padding(
               padding:  EdgeInsets.only(top: 6.h),
               child: IconButton(onPressed: (){
-                  locationController.setTabIndex = 1;
+                  locationController.setTabIndex = locationController.tabIndex + 1;
                   _pageController.nextPage(duration: const Duration(microseconds: 500), curve: Curves.easeIn);
               }, icon: Icon(Icons.arrow_forward_rounded), color: Theme.of(context).colorScheme.inversePrimary),
             )
-          )
+          ),
         ],
       ),
       body: SizedBox(
@@ -297,20 +299,33 @@ class _ShippingAddressState extends State<ShippingAddress> {
                     style: ButtonStyle(
                     foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                      backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
-                    onPressed: (){
+                    onPressed: () async {
                       if(_searchController.text.isNotEmpty && _postalCode.text.isNotEmpty){
-                        var model = Address(
+                        final user = FirebaseAuth.instance.currentUser;
+                        if (user == null) return;
+
+                        final docRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
+                        final docSnap = await docRef.get();
+
+                        List<dynamic> addressList = docSnap.data()?['address'] ?? [];
+                        final newAddress = Address(
                         addressLine1: _searchController.text,
                         postalCode: _postalCode.text,
                         defaultAddress: locationController.isDefault,
                         latitude: _selectedPosition!.latitude,
                         longitude: _selectedPosition!.longitude);
-                        String data = addressToJson(model);
+                        addressList.add(newAddress.toJson());
+                        await docRef.update({
+                          'address': addressList,
+                        }); 
                       }
                     }, child: Text("Beállít"))
                 ],
               ),
               color: Theme.of(context).colorScheme.surface,
+            ),
+            Container(
+              color: Colors.blue,
             )
           ],
         ),

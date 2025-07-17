@@ -23,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
 
     // try logging in
     try {
-      await authService.signInWithEmailPassword(emailController.text, passwordController.text,);
+      await authService.loginFirebase(emailController.text, passwordController.text,);
     }
 
     // display any errors

@@ -46,9 +46,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       _isLoading = false;
     });
 
-    // Frissít, ha oldalváltás történik
+
     _tabController.addListener(() {
-      setState(() {}); // frissíti a selectedIndex-et a CategoryList-nek
+      setState(() {}); 
     });
   }
 
@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       drawer: const MyDrawer(),
       backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(120),
+        preferredSize: Size.fromHeight(130),
         child: const CustomAppBar(),
       ),
       body: SafeArea(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_order_app/constants.dart';
+import 'package:food_order_app/dimensions.dart';
 
 class CustomContainer extends StatelessWidget {
   CustomContainer({super.key, required this.containerContent});
@@ -9,7 +10,7 @@ class CustomContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.75,
+      //height: MediaQuery.of(context).size.height * 0.75,
       child: ClipRRect(
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(30),

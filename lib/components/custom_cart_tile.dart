@@ -92,28 +92,31 @@ class CustomCartTile extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.all(10),
                 children: cartItem.selectedAddons.map(
-                  (addon) => FilterChip(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    label: Row(
-                      children: [
-
-                        // addon name
-                        Text(addon.name ?? ""),
-
-                        // addon priceR
-                        Text(" (+${addon.price} Ft)"),
-                      ],
-                    ),
-                    shape: StadiumBorder(
-                      side: BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
-                      )
-                    ),
-                    onSelected: (value) {},
-                    backgroundColor: Theme.of(context).colorScheme.surface,
-                    labelStyle: TextStyle(
-                      color: Theme.of(context).colorScheme.inversePrimary,
-                      fontSize: 12,
+                  (addon) => Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: FilterChip(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      label: Row(
+                        children: [
+                    
+                          // addon name
+                          Text(addon.name ?? ""),
+                    
+                          // addon priceR
+                          Text(" (+${addon.price} Ft)"),
+                        ],
+                      ),
+                      shape: StadiumBorder(
+                        side: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                        )
+                      ),
+                      onSelected: (value) {},
+                      backgroundColor: Theme.of(context).colorScheme.surface,
+                      labelStyle: TextStyle(
+                        color: Theme.of(context).colorScheme.inversePrimary,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ).toList(),
