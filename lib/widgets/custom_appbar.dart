@@ -57,7 +57,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   @override
   void initState(){
     super.initState();
-    //_getCurrentLocation();   <- Kell a helymeghatarozashoz. Enelkul nem mukodik semmilyen resze
+    _getCurrentLocation();  // <- Kell a helymeghatarozashoz. Enelkul nem mukodik semmilyen resze
   }
 
   @override
@@ -105,7 +105,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             Obx(
               () => SizedBox(
               width: 500 * 0.65,
-              child: Text(controller.address == "" ? "Dummy address" : controller.address,
+              child: Text(controller.address == "" ? "Nem sikerült lekérni a címet" : controller.address,
               overflow: TextOverflow.ellipsis,),
             ))
            

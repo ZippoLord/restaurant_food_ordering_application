@@ -62,13 +62,16 @@ void _loadUserEmail() async {
                   color: Theme.of(context).colorScheme.inversePrimary,
                 ),
               ),
+               Padding(
+                 padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 23.0),
+                 child: Text("Felhasználó: ${email ?? ''}", style: TextStyle(fontWeight: FontWeight.w500),),
+               ),
               Padding(
                 padding: const EdgeInsets.all(25.0),
                 child: Divider(
                   color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
-               Text(email?? ""),
               CustomDrawerTile(
                 text: "Főoldal",
                 icon: Icons.home,

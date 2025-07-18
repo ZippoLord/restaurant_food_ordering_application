@@ -21,15 +21,18 @@ class CartPage extends StatelessWidget {
         // cart
         final userCart = restaurant.cart;
         
-        String calculateTotalPrice(Restaurant restaurant){
-        num total = 0;
-        for(final item in userCart){
-              final basePrice = item.food.price * item.quantity;
-              final addonTotal = item.selectedAddons.fold<num>(0.0, (sum, addon) => sum + (addon.price * item.quantity),);
-              total += basePrice + addonTotal;
+          String calculateTotalPrice() {
+          num total = 0;
+          for (final item in userCart) {
+            final basePrice = item.food.price * item.quantity;
+            final addonTotal = item.selectedAddons.fold<num>(
+              0.0,
+              (sum, addon) => sum + (addon.price * item.quantity),
+            );
+            total += basePrice + addonTotal;
+          }
+          return total.toStringAsFixed(0);
         }
-        return total.toStringAsFixed(0);
-      }
 
         
 
@@ -38,7 +41,7 @@ class CartPage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.secondary,
         appBar: AppBar(
           elevation: 0,
-          title: Text("Kosár", style: TextStyle(fontWeight: FontWeight.w500),),
+          title: Text("Kosár: ${calculateTotalPrice() == '0' ? '' : '${calculateTotalPrice()} Ft'}", style: TextStyle(fontWeight: FontWeight.w500),),
           actions: [
               // clear the cart button
               IconButton(
@@ -96,17 +99,24 @@ class CartPage extends StatelessWidget {
               ),
             )
           :
-          Container(
-            color: Theme.of(context).colorScheme.surface,
-            child: SizedBox(
-              child: ListView.builder(
-                  itemCount: userCart.length,
-                  itemBuilder: (context, index) {
-                  final cartItem = userCart[index];
-                  return CustomCartTile(cartItem: cartItem);
-                },
+          Column(
+            children: [
+              Expanded(
+                child: Container(
+                  color: Theme.of(context).colorScheme.surface,
+                  child: SizedBox(
+                    child: ListView.builder(
+                        itemCount: userCart.length,
+                        itemBuilder: (context, index) {
+                        final cartItem = userCart[index];
+                        return CustomCartTile(cartItem: cartItem);
+                      },
+                    ),
+                  ),
+                ),
               ),
-            ),
+              Text("ide jon az address"),            
+            ],
           )),
         )
       );

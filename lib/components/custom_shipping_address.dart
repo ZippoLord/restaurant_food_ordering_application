@@ -10,10 +10,53 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_order_app/controllers/user_location_controller.dart';
 import 'package:food_order_app/dimensions.dart';
 import 'package:food_order_app/models/address.dart';
+import 'package:food_order_app/widgets/address_list_widget.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_getx_widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+
+class AddressController extends GetxController {
+  
+  RxList<Address> addressList = <Address>[].obs;  
+
+  Future<void> _fetchAddresses() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+    final docRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
+    final docSnap = await docRef.get();
+    List<dynamic> addressesRaw = docSnap.data()?['address'] ?? [];
+    final parsedAddresses = addressesRaw.map((e) => Address.fromJson(Map<String, dynamic>.from(e))).toList();
+
+    addressList.value = parsedAddresses;
+  }
+
+  Future<void> deleteAddressById(int id) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+    final docRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
+    addressList.removeWhere((address) => address.id == id);
+    await docRef.update({
+      'address': addressList.map((a) => a.toJson()).toList(),
+    });
+    await _fetchAddresses();
+  }
+
+  Future<void> getDefaultAddress() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+    final docRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
+    final docSnap = await docRef.get();
+    List<dynamic> addressesRaw = docSnap.data()?['address'] ?? [];
+    final parsedAddresses = addressesRaw.map((e) => Address.fromJson(Map<String, dynamic>.from(e))).toList();
+
+    addressList.value = parsedAddresses.where((address) => address.defaultAddress).toList();
+  }
+}
+
 
 class ShippingAddress extends StatefulWidget {
   const ShippingAddress({super.key});
@@ -32,13 +75,17 @@ class _ShippingAddressState extends State<ShippingAddress> {
   List<dynamic> _placesList = [];
   List<dynamic> _selectedPlace = [];
   final apiKey = AppConfig.apiKey;
+  //List<Address> addressList = [];
+  int _currentTabIndex = 0;
+  final AddressController addressController = Get.put(AddressController());
 
   @override
   void initState() {
+    super.initState();
     _pageController.addListener(() {
       setState(() {});
     });
-    super.initState();
+    addressController._fetchAddresses();
   }
 
   @override
@@ -111,40 +158,36 @@ class _ShippingAddressState extends State<ShippingAddress> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text('Szállítási cím', style: TextStyle(fontWeight: FontWeight.w500),),
-        leading: Obx(
-          () => Padding(
-            padding: EdgeInsets.only(right: 0.w),
-            child:
-                locationController.tabIndex == 0
-                    ? IconButton(
-                      onPressed: () {
-                        //?
-                        Get.back();
-                      },
-                      icon: Icon(Icons.close_rounded, color: Theme.of(context).colorScheme.inversePrimary),
-                    )
-                    : IconButton(
-                      onPressed: () {
-                        locationController.setTabIndex = 0;
-                        _pageController.previousPage(
-                        duration: const Duration(milliseconds: 300), 
-                        curve: Curves.easeIn);
-                      },
-                      icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).colorScheme.inversePrimary),
-                    ),
-          ),
+        title: Text('Szállítási cím', style: TextStyle(fontWeight: FontWeight.w500)),
+        leading: IconButton(
+          onPressed: () {
+            if (_currentTabIndex == 0) {
+              Navigator.of(context).maybePop();
+            } else {
+              setState(() {
+                _currentTabIndex--;
+                _pageController.jumpToPage(_currentTabIndex);
+              });
+            }
+          },
+          icon: Icon(_currentTabIndex == 0 ? Icons.close_rounded : Icons.arrow_back_rounded, color: Theme.of(context).colorScheme.inversePrimary),
         ),
         actions: [
-          Obx(() => locationController.tabIndex >= 2? 
-            const SizedBox.shrink() : Padding(
-              padding:  EdgeInsets.only(top: 6.h),
-              child: IconButton(onPressed: (){
-                  locationController.setTabIndex = locationController.tabIndex + 1;
-                  _pageController.nextPage(duration: const Duration(microseconds: 500), curve: Curves.easeIn);
-              }, icon: Icon(Icons.arrow_forward_rounded), color: Theme.of(context).colorScheme.inversePrimary),
-            )
-          ),
+          _currentTabIndex >= 2
+              ? const SizedBox.shrink()
+              : Padding(
+                  padding: EdgeInsets.only(top: 6.h),
+                  child: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _currentTabIndex++;
+                        _pageController.jumpToPage(_currentTabIndex);
+                      });
+                    },
+                    icon: Icon(Icons.arrow_forward_rounded),
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                  ),
+                ),
         ],
       ),
       body: SizedBox(
@@ -155,7 +198,9 @@ class _ShippingAddressState extends State<ShippingAddress> {
           physics: NeverScrollableScrollPhysics(),
           pageSnapping: false,
           onPageChanged: (index) {
-            _pageController.jumpToPage(index);
+            setState(() {
+              _currentTabIndex = index;
+            });
           },
           children: [
             Stack(
@@ -285,8 +330,24 @@ class _ShippingAddressState extends State<ShippingAddress> {
                             thumbColor: Colors.white,
                             trackColor: Colors.grey[300],
                             value: locationController.isDefault,
-                            onChanged: (value){
+                            onChanged: (value) async {
+                              // Get user and docRef here, since you need them for update
+                              final user = FirebaseAuth.instance.currentUser;
+                              if (user == null) return;
+                              final docRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
+
+                              // Set all to false
+                              for (var address in addressController.addressList) {
+                                  address.defaultAddress = false;
+                              }
                               locationController.setisDefault = value;
+
+                              // Save back to Firestore
+                              await docRef.update({
+                                'address': addressController.addressList.map((a) => a.toJson()).toList(),
+                              });
+                              await addressController._fetchAddresses();
+                              addressController.addressList.refresh();
                             },
                           ))
                         ],
@@ -295,11 +356,9 @@ class _ShippingAddressState extends State<ShippingAddress> {
                      SizedBox(
                       height: 15,
                     ),
-                    TextButton(
-                    style: ButtonStyle(
-                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                     backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
-                    onPressed: () async {
+                    InkWell(
+                   splashColor: Colors.red.withOpacity(0.2),
+                    onTap: () async {
                       if(_searchController.text.isNotEmpty && _postalCode.text.isNotEmpty){
                         final user = FirebaseAuth.instance.currentUser;
                         if (user == null) return;
@@ -308,24 +367,75 @@ class _ShippingAddressState extends State<ShippingAddress> {
                         final docSnap = await docRef.get();
 
                         List<dynamic> addressList = docSnap.data()?['address'] ?? [];
+                        int autoId = 1;
+
+                        if (addressList.isNotEmpty) {
+                          final ids = addressList.map((e) => e['id'] as int).toList();
+                          autoId = ids.reduce((a, b) => a > b ? a : b) + 1; // Get the max id and increment by 1
+                        }
+
+                        if (locationController.isDefault) {
+                          for (var addr in addressList) {
+                            addr['default'] = false;
+                          }
+                        }
+
                         final newAddress = Address(
-                        addressLine1: _searchController.text,
-                        postalCode: _postalCode.text,
-                        defaultAddress: locationController.isDefault,
-                        latitude: _selectedPosition!.latitude,
-                        longitude: _selectedPosition!.longitude);
+                          id: autoId,
+                          addressLine1: _searchController.text,
+                          postalCode: _postalCode.text,
+                          defaultAddress: locationController.isDefault,
+                          latitude: _selectedPosition!.latitude,
+                          longitude: _selectedPosition!.longitude
+                        );
                         addressList.add(newAddress.toJson());
                         await docRef.update({
                           'address': addressList,
-                        }); 
+                        });
+                        locationController.setTabIndex = 2;
+                        _pageController.jumpToPage(2); 
+                        await addressController._fetchAddresses();
                       }
-                    }, child: Text("Beállít"))
+                    }, 
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                      color: Colors.red,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text("Hozzáadás", style: TextStyle(color: Colors.white, fontSize: 16.sp, fontWeight: FontWeight.w600),),
+                    ),
+                    )
                 ],
               ),
               color: Theme.of(context).colorScheme.surface,
             ),
             Container(
-              color: Colors.blue,
+              child: Stack(
+                children: [
+                   Obx(() => AddressListWidget(addresses: addressController.addressList.toList())),
+                   Align(
+                     alignment: Alignment.bottomCenter,
+                     child: Padding(
+                       padding: EdgeInsets.only(bottom: 150.0), // Move button higher
+                       child: MaterialButton(
+                         onPressed: (){
+                            Navigator.of(context).pop();
+                         }, 
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                         color: Colors.red,
+                         textColor: Colors.white,
+                         minWidth: 230.w,
+                         height: 48,
+                         child: Text('Bezárás', style: TextStyle(fontWeight: FontWeight.bold)),
+                       ),
+                     ),
+                   ),
+                 ],
+              ),
             )
           ],
         ),
