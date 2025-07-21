@@ -9,6 +9,7 @@ import 'package:food_order_app/pages/cart_page.dart';
 import 'package:food_order_app/widgets/addon_column.dart';
 import 'package:food_order_app/widgets/app_column.dart';
 import 'package:food_order_app/widgets/expendable_text_widget.dart';
+import 'package:food_order_app/widgets/home_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
@@ -235,24 +236,9 @@ class _FoodPageState extends State<FoodPage> {
                    addToCart(widget.food, widget.selectedAddons);
                    snackbarString = "${widget.food.name} hozzáadva a kosaradhoz 😋";
                 };
-                   ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    dismissDirection: DismissDirection.up,
-                    behavior: SnackBarBehavior.floating,
-                    backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                    margin: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).size.height-270,
-                      left: Dimensions.width10,
-                      right: Dimensions.width10,
-                    ),
-                    content: InkWell(
-                    onTap: (){
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    },
-                    child:  
-                    Text(snackbarString, style: TextStyle(color: Theme.of(context).colorScheme.tertiary, fontSize: 20, fontWeight: FontWeight.w500),
-                  ))
-                ),
+                   showHomeSnackbar(
+                    context,
+                    snackbarString
                );
                   return;
               },

@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_order_app/components/custom_drawer.dart';
 import 'package:food_order_app/components/custom_food_tile.dart';
 import 'package:food_order_app/models/food.dart';
-import 'package:food_order_app/models/restaurant.dart';
 import 'package:food_order_app/pages/food_page.dart';
 import 'package:food_order_app/services/database/firestore.dart';
 import 'package:food_order_app/components/category_list.dart';

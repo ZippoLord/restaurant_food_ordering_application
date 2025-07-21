@@ -5,3 +5,12 @@ const kPrimaryLight = Color(0xFFef9A9A);
 
 
 const kOffwhite = Color(0xffF3F4F8); 
+
+
+List<String> orderList = [
+  "Függőben",
+  "Készül",
+  "Szállítás alatt",
+  "Kiszállítva",
+  "Törölve"
+];

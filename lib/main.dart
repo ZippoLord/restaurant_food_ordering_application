@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:food_order_app/components/custom_shipping_address.dart';
+import 'package:food_order_app/controllers/address_controller.dart';
 import 'package:food_order_app/pages/cart_page.dart';
 import 'package:food_order_app/pages/food_page.dart';
 import 'package:food_order_app/services/auth/auth_gate.dart';
@@ -21,7 +23,8 @@ void main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
   }
-  Get.put(CartController()); //load Controller
+  Get.put(CartController());
+  Get.put(AddressController()); //load Controller
   try {
     await dotenv.load(fileName: ".env"); //load env varrialbes
   } catch (e) {

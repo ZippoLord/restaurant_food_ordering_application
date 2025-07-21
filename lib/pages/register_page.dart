@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_order_app/services/auth/auth_service.dart';
-import 'package:food_order_app/widgets/snackbar.dart';
+import 'package:food_order_app/widgets/login_register_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import '../components/custom_button.dart';
@@ -47,7 +47,7 @@ class RegisterPageState extends State<RegisterPage> {
 
     // if passwords don't match -> show error
     else {
-      showAppSnackbar('A jelszavak nem egyeznek');
+      showLoginRegisterSnackbar('A jelszavak nem egyeznek');
     }
   }
 

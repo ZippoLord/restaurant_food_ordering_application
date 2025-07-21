@@ -17,7 +17,7 @@ class CustomContainer extends StatelessWidget {
           bottomRight: Radius.circular(30)
         ),
         child: Container(
-          color: kOffwhite,
+          color:  Theme.of(context).colorScheme.surface,
           child: containerContent,
         ),
       ),

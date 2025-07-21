@@ -52,10 +52,6 @@ class CategoryList extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isSelected ? Colors.red.withOpacity(0.1) : Colors.transparent,
                 borderRadius: BorderRadius.circular(10.r),
-                // border: Border.all(
-                //   color: isSelected ? Colors.red : Colors.grey.shade400,
-                //   width: .5.w,
-                // ),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

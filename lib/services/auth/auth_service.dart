@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 import 'package:food_order_app/models/appUser.dart';
 import 'package:food_order_app/services/database/firestore.dart';
-import 'package:food_order_app/widgets/snackbar.dart';
+import 'package:food_order_app/widgets/login_register_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
@@ -90,7 +90,7 @@ class AuthService {
             errorMsg = 'Ismeretlen hiba történt';
         }
         print(errorMsg);
-        showAppSnackbar('Hiba:', message: errorMsg);
+        showLoginRegisterSnackbar('Hiba:', message: errorMsg);
     }
   }
 

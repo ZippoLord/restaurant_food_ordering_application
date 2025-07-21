@@ -84,10 +84,10 @@ class _PaymentPageState extends State<PaymentPage> {
               content: SingleChildScrollView(
                 child: ListBody(
                   children: [
-                    Text("Card number: $cardNumber"),
-                    Text("Expiry date: $expiryDate"),
-                    Text("Card holder name: $cardHolderName"),
-                    Text("CVV: $cvvCode"),
+                    Text("Kártyaszám: $cardNumber"),
+                    Text("Lejárati dátum: $expiryDate"),
+                    Text("Kártyához tartozó név: $cardHolderName"),
+                    Text("CVC: $cvvCode"),
                   ],
                 ),
               ),
@@ -124,7 +124,7 @@ class _PaymentPageState extends State<PaymentPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         foregroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Checkout"),
+        title: const Text("Fizetési mód"),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -145,9 +145,9 @@ class _PaymentPageState extends State<PaymentPage> {
               child: ElevatedButton.icon(
                 onPressed: _scanCard,
                 icon: const Icon(Icons.camera_alt),
-                label: const Text("Scan Credit Card"),
+                label: const Text("Kártya beolvasása"),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  backgroundColor: Theme.of(context).colorScheme.surface,
                   foregroundColor: Theme.of(context).colorScheme.inversePrimary,
                   minimumSize: const Size(double.infinity, 45),
                 ),
@@ -176,7 +176,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
             const SizedBox(height: 20),
 
-            CustomButton(onTap: userTappedPay, text: "Pay now"),
+            CustomButton(onTap: userTappedPay, text: "Fizetes"),
 
             const SizedBox(height: 25),
           ],

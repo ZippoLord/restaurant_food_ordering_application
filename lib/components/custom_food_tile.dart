@@ -26,12 +26,21 @@ class FoodTile extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(food.name),
+                      Text(food.name, style: TextStyle(fontWeight: FontWeight.w500),),
 
-                      Text(
-                        "${food.price} Ft",
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.deepOrange,
+                        ),
+                        child: Text(
+                          "${food.price} Ft",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
                       ),
 

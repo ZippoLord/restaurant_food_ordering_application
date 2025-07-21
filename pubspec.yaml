@@ -54,6 +54,8 @@ dependencies:
   lottie: ^3.0.0
   flutter_screenutil: ^5.9.3
 
+credit_card_scanner:
+  path: local_plugins/credit_card_scanner
 
 
 dev_dependencies:

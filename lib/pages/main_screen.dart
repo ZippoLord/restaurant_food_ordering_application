@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_order_app/components/custom_drawer.dart';
 import 'package:food_order_app/components/search_page.dart';
+import 'package:food_order_app/components/user_orders.dart';
 import 'package:food_order_app/controllers/tab_controller.dart';
 import 'package:food_order_app/pages/cart_page.dart';
 import 'package:food_order_app/pages/food_page.dart';
@@ -14,7 +15,7 @@ class MainScreen extends StatelessWidget {
   List<Widget> pageList = [
     HomePage(),
     CartPage(),
-    SearchPage()
+    UserOrders()
   ];
 
   @override
@@ -74,8 +75,8 @@ Widget build(BuildContext context) {
             label: 'Kosár',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Keresés',
+            icon: Icon(Icons.shopping_bag),
+            label: 'Rendelések',
           ),
         ],
       ),

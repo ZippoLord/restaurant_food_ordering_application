@@ -8,65 +8,30 @@ import 'package:food_order_app/config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_order_app/controllers/user_location_controller.dart';
+import 'package:food_order_app/controllers/address_controller.dart';
 import 'package:food_order_app/dimensions.dart';
 import 'package:food_order_app/models/address.dart';
 import 'package:food_order_app/widgets/address_list_widget.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:food_order_app/widgets/home_snackbar.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_getx_widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 
-class AddressController extends GetxController {
-  
-  RxList<Address> addressList = <Address>[].obs;  
-
-  Future<void> _fetchAddresses() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
-    final docRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
-    final docSnap = await docRef.get();
-    List<dynamic> addressesRaw = docSnap.data()?['address'] ?? [];
-    final parsedAddresses = addressesRaw.map((e) => Address.fromJson(Map<String, dynamic>.from(e))).toList();
-
-    addressList.value = parsedAddresses;
-  }
-
-  Future<void> deleteAddressById(int id) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
-    final docRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
-    addressList.removeWhere((address) => address.id == id);
-    await docRef.update({
-      'address': addressList.map((a) => a.toJson()).toList(),
-    });
-    await _fetchAddresses();
-  }
-
-  Future<void> getDefaultAddress() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
-    final docRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
-    final docSnap = await docRef.get();
-    List<dynamic> addressesRaw = docSnap.data()?['address'] ?? [];
-    final parsedAddresses = addressesRaw.map((e) => Address.fromJson(Map<String, dynamic>.from(e))).toList();
-
-    addressList.value = parsedAddresses.where((address) => address.defaultAddress).toList();
-  }
-}
 
 
 class ShippingAddress extends StatefulWidget {
-  const ShippingAddress({super.key});
+  final int initialPage;
+
+  const ShippingAddress({super.key, this.initialPage = 0});
 
   @override
   State<ShippingAddress> createState() => _ShippingAddressState();
 }
 
 class _ShippingAddressState extends State<ShippingAddress> {
-  late final PageController _pageController = PageController(initialPage: 0);
+  late final PageController _pageController;
   GoogleMapController? _mapController;
   final locationController = Get.put(UserLocationController());
   final TextEditingController _searchController = TextEditingController();
@@ -82,10 +47,9 @@ class _ShippingAddressState extends State<ShippingAddress> {
   @override
   void initState() {
     super.initState();
-    _pageController.addListener(() {
-      setState(() {});
-    });
-    addressController._fetchAddresses();
+    _currentTabIndex = widget.initialPage;
+    _pageController = PageController(initialPage: widget.initialPage);
+    addressController.fetchAddresses();
   }
 
   @override
@@ -346,7 +310,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
                               await docRef.update({
                                 'address': addressController.addressList.map((a) => a.toJson()).toList(),
                               });
-                              await addressController._fetchAddresses();
+                              await addressController.fetchAddresses();
                               addressController.addressList.refresh();
                             },
                           ))
@@ -394,7 +358,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
                         });
                         locationController.setTabIndex = 2;
                         _pageController.jumpToPage(2); 
-                        await addressController._fetchAddresses();
+                        await addressController.fetchAddresses();
                       }
                     }, 
                     child: Container(
@@ -411,31 +375,37 @@ class _ShippingAddressState extends State<ShippingAddress> {
               ),
               color: Theme.of(context).colorScheme.surface,
             ),
-            Container(
-              child: Stack(
-                children: [
-                   Obx(() => AddressListWidget(addresses: addressController.addressList.toList())),
-                   Align(
-                     alignment: Alignment.bottomCenter,
-                     child: Padding(
-                       padding: EdgeInsets.only(bottom: 150.0), // Move button higher
-                       child: MaterialButton(
-                         onPressed: (){
-                            Navigator.of(context).pop();
-                         }, 
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                         color: Colors.red,
-                         textColor: Colors.white,
-                         minWidth: 230.w,
-                         height: 48,
-                         child: Text('Bezárás', style: TextStyle(fontWeight: FontWeight.bold)),
-                       ),
+            Stack(
+              children: [
+                 Obx(() => AddressListWidget(addresses: addressController.addressList.toList())),
+                 Align(
+                   alignment: Alignment.bottomCenter,
+                   child: Padding(
+                     padding: EdgeInsets.only(bottom: 150.0),
+                     child: MaterialButton(
+                       onPressed: (){
+                          Navigator.of(context).pop();
+                          setState(() {
+                            addressController.selectedAddress.value.isEmpty ? 
+                            addressController.selectedAddress.value =
+                            addressController.addressList.firstWhere((address) => address.defaultAddress).addressLine1
+                            : addressController.selectedAddress.value;
+                          });
+                          showHomeSnackbar(context, "A szállítási cím: ${addressController.selectedAddress.value} 🏠",);
+                         //print("Selected Address from the AddressWidget ${addressController.selectedAddress.value}");
+                       }, 
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                       color: Colors.red,
+                       textColor: Colors.white,
+                       minWidth: 230.w,
+                       height: 48,
+                       child: Text('Bezárás', style: TextStyle(fontWeight: FontWeight.bold)),
                      ),
                    ),
-                 ],
-              ),
+                 ),
+               ],
             )
           ],
         ),
