@@ -5,6 +5,9 @@ const app = express();
 const CategoryRoute = require('./routes/category');
 const RestaurantRoute = require('./routes/restaurant');
 const FoodRoute = require('./routes/food');
+const RatingRoute = require('./routes/rating')
+const authRoute = require('./routes/auth')
+const userRoute = require('./routes/user')
 
 dotenv.config();
 
@@ -13,9 +16,12 @@ mongoose.connect(process.env.DBCONNECTION).then(() =>console.log("Connected to d
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/api/auth', authRoute);
+app.use('/users', userRoute);
 app.use('/api/category', CategoryRoute);
 app.use('/api/restaurant', RestaurantRoute);
 app.use('/api/food', FoodRoute);
+app.use('/api/rating', RatingRoute);
 
 
 app.listen(process.env.PORT, () => console.log(`Server running at http://localhost:${process.env.PORT}`));
