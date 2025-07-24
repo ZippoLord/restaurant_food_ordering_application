@@ -3,13 +3,14 @@ const User =require('../models/User')
 
 module.exports ={
     getUser: async(req,res) =>{
-        console.log("Logging in user ID:", user._id);
+        
         try {
             const user = await User.findById(req.user.id);
             if (!user) {
                 return res.status(404).json({ status: false, message: "User not found" });
             }
             const {password, __v, createdAt, ...userData} = user._doc;
+            console.log("Logging in user ID:", user._id);
             res.status(200).json(userData);
 
         } catch (error) {

@@ -9,4 +9,4 @@ const AddressSchema = new mongoose.Schema({
     longitude: {type: String, required: false}
 })
 
-module.exports = mongoose.model('User', AddressSchema)
+module.exports = mongoose.model('Address', AddressSchema)

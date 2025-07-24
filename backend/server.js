@@ -8,6 +8,7 @@ const FoodRoute = require('./routes/food');
 const RatingRoute = require('./routes/rating')
 const authRoute = require('./routes/auth')
 const userRoute = require('./routes/user')
+const addressRoute = require('./routes/address')
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ mongoose.connect(process.env.DBCONNECTION).then(() =>console.log("Connected to d
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoute);
+app.use('/address', addressRoute);
 app.use('/users', userRoute);
 app.use('/api/category', CategoryRoute);
 app.use('/api/restaurant', RestaurantRoute);
