@@ -6,6 +6,7 @@ import 'package:food_order_app/models/food.dart';
 import 'package:food_order_app/pages/food_page.dart';
 import 'package:food_order_app/services/database/firestore.dart';
 import 'package:food_order_app/components/category_list.dart';
+import 'package:food_order_app/widgets/category_list.dart';
 import 'package:food_order_app/widgets/custom_appbar.dart';
 import 'package:food_order_app/widgets/custom_container.dart';
 import 'package:food_order_app/widgets/sliver_tab_bar.dart';
@@ -88,8 +89,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         body: Center(child: Lottie.asset('lib/images/loaders/Food Carousel.json')),
       );
     }
+    CategoryListVer2();
     return Scaffold(
-      drawer: const MyDrawer(),
+      drawer: const CategoryListVer2(), //const myDrawer()
       backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(130),

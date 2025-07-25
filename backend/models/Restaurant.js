@@ -5,6 +5,7 @@ const RestaurantSchema = new mongoose.Schema({
     time: {type: String, required: true},
     imageUrl: {type: String, required: true},
     foods: {type: Array, default: []},
+    pickup: {type: Boolean, requred: true},
     delivery: {type: Boolean, required: true},
     isAvailable: {type: Boolean, required: true},
     code: {type: String, required: true},
