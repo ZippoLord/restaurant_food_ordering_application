@@ -3,6 +3,7 @@ import 'package:food_order_app/components/app_icon.dart';
 import 'package:food_order_app/controllers/tab_controller.dart';
 import 'package:food_order_app/models/cart_item.dart';
 import 'package:food_order_app/models/food.dart';
+import 'package:food_order_app/models/newmodels/food.dart';
 import 'package:food_order_app/models/restaurant.dart';
 import 'package:food_order_app/dimensions.dart';
 import 'package:food_order_app/pages/cart_page.dart';
@@ -35,20 +36,14 @@ class CartController extends GetxController{
 }
 
 class FoodPage extends StatefulWidget {
-  final Food food;
+  final FoodModel food;
   final Map<Addon, bool> selectedAddons = {};
 
   FoodPage({
     super.key,
     required this.food,
   }){
-    // initialize selected addons to be false
 
-    if(food.availableAddons != null && food.availableAddons!.isNotEmpty){
-      for (Addon addon in food.availableAddons!) {
-        selectedAddons[addon] = false; 
-      }
-    }
   }
 
   @override
@@ -64,11 +59,7 @@ class _FoodPageState extends State<FoodPage> {
 
     // format the selected addons
     List<Addon> currentlySelectedAddons = [];
-    for (Addon addon in widget.food.availableAddons!) {
-      if (widget.selectedAddons[addon] == true) {
-        currentlySelectedAddons.add(addon);
-      }
-    }
+  
     // add to cart
     context.read<Restaurant>().addToCart(food, currentlySelectedAddons, quantity: controller.selectedItems);
     
@@ -89,7 +80,7 @@ class _FoodPageState extends State<FoodPage> {
               decoration: BoxDecoration(
                 image: DecorationImage(
                 fit: BoxFit.cover,
-                image: NetworkImage(widget.food.imagePath)
+                image: NetworkImage(widget.food.imageUrl)
                 ),
               ),
           ),
@@ -161,7 +152,7 @@ class _FoodPageState extends State<FoodPage> {
                child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppColumn(foodName: widget.food.name, foodPrice: widget.food.price,),
+                  AppColumn(foodName: widget.food.title, foodPrice: widget.food.price, foodTime: widget.food.time, rating: widget.food.rating, ratingCount: widget.food.ratingCount,),
                   SizedBox(height: Dimensions.height20,),
                   Text("Leírás", style: TextStyle(fontSize: 24, fontWeight:  FontWeight.w400),), 
                   ExpendableTextWidget(description: widget.food.description), 
@@ -233,8 +224,8 @@ class _FoodPageState extends State<FoodPage> {
                 if(controller.selectedItems == 0){
                    snackbarString =  'Adj meg egy mennyiséget! 🙄';
                 } else {
-                   addToCart(widget.food, widget.selectedAddons);
-                   snackbarString = "${widget.food.name} hozzáadva a kosaradhoz 😋";
+                   //addToCart(widget.food, widget.selectedAddons);
+                   snackbarString = "${widget.food.title} hozzáadva a kosaradhoz 😋";
                 };
                    showHomeSnackbar(
                     context,

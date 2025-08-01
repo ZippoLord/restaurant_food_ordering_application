@@ -42,9 +42,9 @@ module.exports = {
 
     getFoodByCategory: async (req,res) =>{
         try {
-            const {category, code} = req.params;
+            const {category} = req.params;
             const foods = await Food.aggregate([
-                {$match: {category: category, code: code, isAvailable: true}},
+                {$match: {category: category}},
                 {$project: {__v:0}},
             ])
             return res.status(200).json(foods);

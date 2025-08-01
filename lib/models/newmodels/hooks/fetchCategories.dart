@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:food_order_app/models/newmodels/apiError.dart';
 import 'package:food_order_app/models/newmodels/category.dart';
-import 'package:food_order_app/models/newmodels/hooks.dart';
+import 'package:food_order_app/models/newmodels/hooks/hooks.dart';
 
 FetchHooks  useFetchCategories(){
   final categoryItems = useState<List<CategoryModel>?>(null);
@@ -16,9 +16,7 @@ FetchHooks  useFetchCategories(){
 
     try{
       final response = await http.get(Uri.parse('$baseURL/api/category'));
-      print(response.statusCode);
       if(response.statusCode == 200){
-        print("✅ 200as stauts code${response.statusCode}");
         categoryItems.value = categoryModelFromJson(response.body);
       }else{
         apiError.value = apiErrorFromJson(response.body);

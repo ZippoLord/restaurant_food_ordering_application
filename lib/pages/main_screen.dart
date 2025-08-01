@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:food_order_app/components/custom_drawer.dart';
-import 'package:food_order_app/components/search_page.dart';
 import 'package:food_order_app/components/user_orders.dart';
 import 'package:food_order_app/controllers/tab_controller.dart';
 import 'package:food_order_app/pages/cart_page.dart';

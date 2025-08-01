@@ -1,131 +1,78 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_order_app/components/custom_drawer.dart';
-import 'package:food_order_app/components/custom_food_tile.dart';
+import 'package:food_order_app/components/foods.dart';
 import 'package:food_order_app/models/food.dart';
-import 'package:food_order_app/pages/food_page.dart';
-import 'package:food_order_app/services/database/firestore.dart';
+import 'package:food_order_app/models/newmodels/hooks/fetchCategories.dart';
 import 'package:food_order_app/components/category_list.dart';
-import 'package:food_order_app/widgets/category_list.dart';
 import 'package:food_order_app/widgets/custom_appbar.dart';
 import 'package:food_order_app/widgets/custom_container.dart';
 import 'package:food_order_app/widgets/sliver_tab_bar.dart';
-import 'package:food_order_app/components/Restaurants.dart';
 import 'package:lottie/lottie.dart';
 
-
-class HomePage extends StatefulWidget {
+class HomePage extends HookWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-  final db = FirestoreService();
-
-  List<Food> _menu = [];
-  List<FoodCategory> _usedCategories = [];
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    loadMenu();
-  }
-
-  Future<void> loadMenu() async {
-    final fetchedMenu = await db.getAllFoodFromDatabase();
-    final categories = fetchedMenu.map((f) => f.foodCategory).toSet().toList();
-
-    setState(() {
-      _menu = fetchedMenu;
-      _usedCategories = categories;
-      _tabController = TabController(length: _usedCategories.length, vsync: this);
-      _isLoading = false;
-    });
-
-
-    _tabController.addListener(() {
-      setState(() {}); 
-    });
-  }
-
-  List<Widget> getFoodInThisCategory() {
-    return _usedCategories.map((category) {
-      List<Food> categoryMenu = _menu.where((f) => f.foodCategory == category).toList();
-      return Container(
-        color: Theme.of(context).colorScheme.surface,
-        child: SizedBox(
-          child: ListView.builder(
-            itemCount: categoryMenu.length,
-            itemBuilder: (context, index) {
-              final food = categoryMenu[index];
-              return FoodTile(
-                food: food,
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FoodPage(food: food)),
-                ),
-              );
-            },
-          ),
-        ),
-      );
-    }).toList();
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return  Scaffold(
-        body: Center(child: Lottie.asset('lib/images/loaders/Food Carousel.json')),
+    final categoriesHook = useFetchCategories();
+    final categories = categoriesHook.data;
+    final isLoading = categoriesHook.isLoading;
+
+    final selectedIndex = useState(0);
+
+    if (categories == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
       );
     }
-    CategoryListVer2();
+
+    final tabController = useTabController(initialLength: categories.length);
+    tabController.addListener(() {
+      selectedIndex.value = tabController.index;
+    });
+
+    final selectedCategory = categories[selectedIndex.value];
+
+
+    if(isLoading){
+      Center(child: Lottie.asset("/lib/images/loaders/Food Carousel.json"));
+    }
+
     return Scaffold(
-      drawer: const CategoryListVer2(), //const myDrawer()
+      drawer: const MyDrawer(),
       backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(130),
+        preferredSize: const Size.fromHeight(120),
         child: const CustomAppBar(),
       ),
       body: SafeArea(
         child: CustomContainer(
-          containerContent: DefaultTabController(
-            length: _usedCategories.length,
-            child: NestedScrollView(
-              headerSliverBuilder: (context, innerBoxIsSchrolled) => [
-                SliverToBoxAdapter(
-                  child: const Restaurants(mockMode: true,),
-                ),
-                SliverPersistentHeader( 
-                  pinned: true,
-                  delegate: SliverTabBarDelegate(
-                    child: SizedBox(
-                      height: 80.h,
-                      child: CategoryList(
-                        categories: _usedCategories,
-                        tabController: _tabController,
-                        selectedIndex: _tabController.index,
-                      ),
+          containerContent: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: SliverTabBarDelegate(
+                  child: SizedBox(
+                    height: 80.h,
+                    child: CategoryList(
+                      categories: categories,
+                      tabController: tabController,
+                      selectedIndex: selectedIndex.value,
                     ),
                   ),
-                )
-              ],
+                ),
+              ),
+            ],
               body: TabBarView(
-                controller: _tabController,
-                children: getFoodInThisCategory(),
-            ),
+                controller: tabController,
+                children: categories.map<Widget>((cat) {
+                  return Foods(category: cat);
+                }).toList(), 
+              ),
           ),
-        ),)
+        ),
       ),
     );
   }

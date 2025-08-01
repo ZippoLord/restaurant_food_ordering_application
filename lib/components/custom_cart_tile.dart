@@ -33,8 +33,8 @@ class CustomCartTile extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder:
-                                    (context) =>
-                                        FoodPage(food: cartItem.food),
+                                    (context) => Container()
+                                      // FoodPage(food: cartItem.food),
                               ),
                             ),
                         child: ClipRRect(

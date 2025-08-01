@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../models/food.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:food_order_app/models/newmodels/food.dart';
 
-class FoodTile extends StatelessWidget {
-  final Food food;
+class FoodTile extends HookWidget {
+  final FoodModel food;
   final void Function()? onTap;
 
   const FoodTile({
@@ -13,6 +14,7 @@ class FoodTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Column(
       children: [
         GestureDetector(
@@ -26,7 +28,7 @@ class FoodTile extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(food.name, style: TextStyle(fontWeight: FontWeight.w500),),
+                      Text(food.title, style: TextStyle(fontWeight: FontWeight.w500),),
 
                       Container(
                         padding: const EdgeInsets.symmetric(
@@ -37,7 +39,7 @@ class FoodTile extends StatelessWidget {
                           color: Colors.deepOrange,
                         ),
                         child: Text(
-                          "${food.price} Ft",
+                          "${food.price.toInt()} Ft",
                           style: TextStyle(
                             color: Colors.white,
                           ),
@@ -63,7 +65,7 @@ class FoodTile extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child:Image.network(
-                  food.imagePath,
+                  food.imageUrl,
                   height: 120, 
                   width: 120,
                   fit: BoxFit.cover, 

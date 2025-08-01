@@ -57,7 +57,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   @override
   void initState(){
     super.initState();
-    _getCurrentLocation();  // <- Kell a helymeghatarozashoz. Enelkul nem mukodik semmilyen resze
+    //_getCurrentLocation();  // <- Kell a helymeghatarozashoz. Enelkul nem mukodik semmilyen resze
   }
 
   @override
@@ -65,9 +65,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
   final controller = Get.put(UserLocationController());
 
   return Container(
-  height: 140.h,
+  height: 130.h,
   color: Theme.of(context).colorScheme.surface,
-  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+  padding: const EdgeInsets.only(left:10, right:10, top: 50),
   child: Row(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
