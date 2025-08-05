@@ -8,6 +8,8 @@ module.exports ={
             addressLine1 : req.body.addressLine1,
             postalCode : req.body.postalCode,
             default : req.body.default,
+            floorNumber : req.body.floorNumber,
+            doorNumber : req.body.doorNumber,
             latitude : req.body.latitude,
             longitude : req.body.longitude,
         })

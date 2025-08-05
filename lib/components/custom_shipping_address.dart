@@ -36,6 +36,8 @@ class _ShippingAddressState extends State<ShippingAddress> {
   final locationController = Get.put(UserLocationController());
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _postalCode = TextEditingController();
+  final TextEditingController _doorNumber = TextEditingController();
+  final TextEditingController _floorNumber = TextEditingController();
   LatLng? _selectedPosition;
   List<dynamic> _placesList = [];
   List<dynamic> _selectedPlace = [];
@@ -88,6 +90,8 @@ class _ShippingAddressState extends State<ShippingAddress> {
       final address = location['result']['formatted_address'];
 
       String postalCode = "";
+      String doorNumber = "";
+      String floorNumber = "";
       final addressComponents = location['result']['address_components'];
 
       for (var component in addressComponents) {
@@ -101,6 +105,8 @@ class _ShippingAddressState extends State<ShippingAddress> {
         _selectedPosition = LatLng(lat, lng);
         _searchController.text = address;
         _postalCode.text = postalCode;
+        _floorNumber.text = floorNumber;
+        _doorNumber.text = doorNumber;
         moveToSelectedPosition();
         _placesList = [];
       });
@@ -281,6 +287,38 @@ class _ShippingAddressState extends State<ShippingAddress> {
                       hintText: 'Irányítószám',
                       ),
                     ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    TextField(
+                      controller: _floorNumber,
+                      decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 2.0,
+                        )
+                      ),
+                      hintText: 'Emelet',
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    TextField(
+                      controller: _doorNumber,
+                      decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 2.0,
+                        )
+                      ),
+                      hintText: 'Ajtó',
+                      ),
+                    ),
                      SizedBox(
                       height: 15,
                     ),
@@ -348,6 +386,8 @@ class _ShippingAddressState extends State<ShippingAddress> {
                           id: autoId,
                           addressLine1: _searchController.text,
                           postalCode: _postalCode.text,
+                          floorNumber: _floorNumber.text,
+                          doorNumber: _doorNumber.text,
                           defaultAddress: locationController.isDefault,
                           latitude: _selectedPosition!.latitude,
                           longitude: _selectedPosition!.longitude

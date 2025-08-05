@@ -4,6 +4,8 @@ const AddressSchema = new mongoose.Schema({
     userId: {type: String, required: true},
     addressLine1: {type: String, required: true},
     postalCode: {type: String, required: true},
+    floorNumber: {type: String, required: false},
+    doorNumber: {type: String, required: false},
     default: {type: Boolean, default: false},
     latitude: {type: String, required: false},
     longitude: {type: String, required: false}

@@ -32,20 +32,22 @@ class AddressTile extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.r),
       ),
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            address.addressLine1,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          if (address.defaultAddress)
-            const Text(
-              "Alapértelmezett cím",
-              style: TextStyle(fontWeight: FontWeight.w300),
-            ),
-        ],
+       title: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      if (address.defaultAddress)
+        const Text(
+          "Alapértelmezett cím",
+          style: TextStyle(fontWeight: FontWeight.w300),
+        ),
+      Text(
+        (address.doorNumber != '' && address.floorNumber != '')
+            ? "${address.addressLine1}, ${address.floorNumber}, ${address.doorNumber}"
+            : address.addressLine1,
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
+    ],
+  ),
       trailing: IconButton(
         icon: Icon(Icons.delete, color: Colors.red, size: 20.h),
         onPressed: () => showDialog(
