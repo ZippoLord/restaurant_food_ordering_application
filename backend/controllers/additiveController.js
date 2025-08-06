@@ -1,4 +1,4 @@
-const Additives = require('../models/Additives');
+const Additives = require('../models/Additive');
 
 
 module.exports ={
@@ -10,10 +10,14 @@ module.exports ={
                     return res.status(400).json({ message: 'All fields are required' });
                 }
                 else{
-                        const newAdditives = new Additives({
+                       const newAdditives = new Additives({
                        title,
                        price,
                     })
+                    const existedAdditive = await Additives.find({title})
+                    if(existedAdditive){
+                    res.status(400).json({status: false, message: "Additive is already exist"});                        
+                    }
                     await newAdditives.save();
                     res.status(201).json({status: true, message: "Additive added successfully"});
                 }
@@ -33,13 +37,11 @@ module.exports ={
     },
 
     getAllAdditives: async (req, res) => {
-    try {
-        const additives = await Additives.find();
-        res.status(200).json({ status: true, additives });
-    } catch (error) {
-        res.status(500).json({ status: false, message: error.message });
+        try {
+            const additives = await Additives.findAll();
+            res.status(200).json({ status: true, additives });
+        } catch (error) {
+            res.status(500).json({ status: false, message: error.message });
+        }
     }
-    }
-
-
 }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:food_order_app/dimensions.dart';
 import 'package:food_order_app/models/food.dart';
+import 'package:food_order_app/models/newmodels/additive.dart';
 
 class AddonColumn extends StatelessWidget {
-  final Map<Addon, bool> addons; 
-  final void Function(Addon addon, bool selected) onSelectedChanged;
+  final Map<AdditiveModel, bool> addons; 
+  final void Function(AdditiveModel addon, bool selected) onSelectedChanged;
   const AddonColumn({super.key, required this.addons, required this.onSelectedChanged});
 
   @override
@@ -18,7 +19,7 @@ class AddonColumn extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
           child: FilterChip(
-            label: Text("${addon.name} (+${addon.price} Ft)"),
+            label: Text("${addon.title} (+${addon.price} Ft)"),
             selected: isSelected,
             onSelected: (bool selected) {
               onSelectedChanged(addon, selected);

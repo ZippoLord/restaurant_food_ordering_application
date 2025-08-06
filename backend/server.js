@@ -12,6 +12,7 @@ const userRoute = require('./routes/user')
 const addressRoute = require('./routes/address')
 const cartRoute = require('./routes/cart')
 const orderRoute = require('./routes/order')
+const additiveRoute = require('./routes/additive')
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ app.use('/api/restaurant', RestaurantRoute);
 app.use('/api/food', FoodRoute);
 app.use('/api/rating', RatingRoute);
 app.use('/api/orders', orderRoute);
+app.use('/api/additives', additiveRoute);
 
 
 app.listen(process.env.PORT, () => console.log(`Server running at http://localhost:${process.env.PORT}`));

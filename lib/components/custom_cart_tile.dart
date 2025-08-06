@@ -33,14 +33,13 @@ class CustomCartTile extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder:
-                                    (context) => Container()
-                                      // FoodPage(food: cartItem.food),
+                                    (context) => FoodPage(food: cartItem.food),
                               ),
                             ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: Image.network(
-                            cartItem.food.imagePath,
+                            cartItem.food.imageUrl,
                             height: 100,
                             width: 100,
                           ),
@@ -53,7 +52,7 @@ class CustomCartTile extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              cartItem.food.name,
+                              cartItem.food.title,
                               style: TextStyle(fontWeight: FontWeight.w500),
                             ),
                             Padding(
@@ -65,7 +64,7 @@ class CustomCartTile extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Text(
-                                  "${cartItem.food.price} Ft",
+                                  "${cartItem.food.price.toInt()} Ft",
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),
@@ -117,7 +116,7 @@ class CustomCartTile extends StatelessWidget {
                                   label: Row(
                                     children: [
                                       // addon name
-                                      Text(addon.name ?? ""),
+                                      Text(addon.title ?? ""),
 
                                       // addon priceR
                                       Text(" (+${addon.price} Ft)"),

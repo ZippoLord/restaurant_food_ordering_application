@@ -43,10 +43,7 @@ module.exports = {
     getFoodByCategory: async (req,res) =>{
         try {
             const {category} = req.params;
-            const foods = await Food.aggregate([
-                {$match: {category: category}},
-                {$project: {__v:0}},
-            ])
+            const foods = await Food.find({category}).populate({path: 'additives', model: 'Additive'}).select("-__v")
             return res.status(200).json(foods);
         } catch (error) {
             return res.status(500).json({status: false, message: "Error in getFoodByCategory function"});

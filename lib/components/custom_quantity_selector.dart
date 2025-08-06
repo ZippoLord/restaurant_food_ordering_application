@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:food_order_app/models/food.dart';
+import 'package:food_order_app/models/newmodels/food.dart';
 
 class QuantitySelector extends StatelessWidget {
   final int quantity;
-  final Food food;
+  final FoodModel food;
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;
 

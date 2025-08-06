@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:food_order_app/models/cart_item.dart';
+import 'package:food_order_app/models/newmodels/additive.dart';
+import 'package:food_order_app/models/newmodels/food.dart';
 import 'package:food_order_app/pages/food_page.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -41,7 +43,7 @@ class Restaurant extends ChangeNotifier {
 
   
 
-      List<CartItem> addToCart(Food food, List<Addon> selectedAddons, {int quantity = 1}) {
+      List<CartItem> addToCart(FoodModel food, List<AdditiveModel> selectedAddons, {int quantity = 1}) {
         // see if there is a cart item already with the same food and addons selected
         CartItem? cartItem = _cart.firstWhereOrNull((item) {
           bool isSameFood = item.food == food;
@@ -105,13 +107,13 @@ class Restaurant extends ChangeNotifier {
   }
 
   // get total price of items in the cart
-  int getTotalPrice() {
-    int total = 0;
+  double getTotalPrice() {
+    double total = 0;
 
     for (CartItem cartItem in _cart) {
-      int itemTotal = cartItem.food.price;
+      double itemTotal = cartItem.food.price;
 
-        for (Addon addon in cartItem.selectedAddons) {
+        for (AdditiveModel addon in cartItem.selectedAddons) {
           itemTotal += addon.price;
         }
 
@@ -237,12 +239,12 @@ class Restaurant extends ChangeNotifier {
 
       for (final cartItem in _cart) {
         receipt.writeln(
-          "${cartItem.quantity} x ${cartItem.food.name} - ${_formatPrice(cartItem.food.price)}\n",
+        //  "${cartItem.quantity} x ${cartItem.food.name} - ${_formatPrice(cartItem.food.price)}\n",
         );
 
         if (cartItem.selectedAddons.isNotEmpty) {
           receipt.writeln(
-            "   Add-ons:\n   ${_formatAddons(cartItem.selectedAddons)}",
+       //     "   Add-ons:\n   ${_formatAddons(cartItem.selectedAddons)}",
           );
         }
         receipt.writeln();
@@ -253,7 +255,7 @@ class Restaurant extends ChangeNotifier {
       );
       receipt.writeln();
       receipt.writeln("Tételek száma: ${getTotalItemCount()}\n");
-      receipt.writeln("Teljes ár: ${_formatPrice(getTotalPrice())}\n");
+      //Rreceipt.writeln("Teljes ár: ${_formatPrice(getTotalPrice())}\n");
       receipt.writeln("Szállítási cím: $deliveryAddress\n");
 
       addToDatabaseJson();

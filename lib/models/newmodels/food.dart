@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:food_order_app/models/newmodels/additive.dart';
+
 List<FoodModel> foodModelFromJson(String str) {
   final decoded = json.decode(str) as List<dynamic>;
   return decoded.map((x) => FoodModel.fromJson(x)).toList();
@@ -18,7 +20,7 @@ class FoodModel {
   final String ratingCount;
   final double price;
   final String description;
-  final List<String> additives;
+  final List<AdditiveModel> additives;
   final String category;
 
   FoodModel({
@@ -49,7 +51,7 @@ class FoodModel {
         ratingCount: json["ratingCount"],
         price: (json["price"] ?? 0).toDouble(),
         additives: json["additives"] != null 
-      ? List<String>.from(json["additives"]) 
+      ? List<AdditiveModel>.from(json["additives"].map((x) => AdditiveModel.fromJson(x))) 
       : [],
         category: json["category"],
       );
@@ -66,28 +68,8 @@ class FoodModel {
         "rating": rating,
         "ratingCount": ratingCount,
         "price": price,
-        "additives": List<dynamic>.from(additives),
+        "additives": additives.map((a) => a.toJson()).toList(),
     };
 }
 
 
-class Additive {
-  final int id;
-  final String title;
-  final String price;
-
-  Additive({required this.id, required this.title, required this.price});
-
-  factory Additive.fromJson(Map<String, dynamic> json) =>Additive(
-    id: json["id"],
-    title: json["title"],
-    price: json["price"],
-  );
-
-  Map<String, dynamic> toJson() =>{
-    "id": id,
-    "title": title,
-    "price": price,
-  };
-
-}

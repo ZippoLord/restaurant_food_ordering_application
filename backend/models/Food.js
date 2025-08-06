@@ -11,7 +11,7 @@ const FoodSchema = new mongoose.Schema({
     rating: {type: Number, min: 1, max:5, default: 3},
     ratingCount:{type: String, default:"267"},
     price: {type: Number, required: true, validate:{validator: Number.isInteger}},
-    additives: {type: Array, default: []},
+    additives: [{type: mongoose.Schema.Types.ObjectId, required: false, ref:"Additive"}],
     
 })
 

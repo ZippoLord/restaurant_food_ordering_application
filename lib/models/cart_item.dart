@@ -1,8 +1,10 @@
 import 'package:food_order_app/models/food.dart';
+import 'package:food_order_app/models/newmodels/additive.dart';
+import 'package:food_order_app/models/newmodels/food.dart';
 
 class CartItem {
-  Food food;
-  List<Addon> selectedAddons;
+  FoodModel food;
+  List<AdditiveModel> selectedAddons;
   int quantity;
 
   CartItem({
@@ -10,9 +12,9 @@ class CartItem {
     required this.selectedAddons,
     this.quantity = 1,
   });
-  int get totalPrice {
-    int basePrice = food.price;
-    int addonsPrice = selectedAddons.fold(0, (sum, addon) => sum + addon.price);
+  double get totalPrice {
+    double basePrice = food.price;
+    double addonsPrice = selectedAddons.fold(0, (sum, addon) => sum + addon.price);
     return (basePrice + addonsPrice) * quantity;
   }
 

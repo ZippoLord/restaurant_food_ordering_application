@@ -24,7 +24,7 @@ FetchHooks useFetchFoods(List<CategoryModel> categories) {
           final foods = foodModelFromJson(res.body);
           allFoods.addAll(foods);
           for (final food in foods) {
-            print("🍕 ${food.title} (${food.category})");
+            print("🍕 ${food.title} (${food.category} ${food.additives})");
           }     
         } else {
           print("❌ Error in ${category.value}: ${res.statusCode}");

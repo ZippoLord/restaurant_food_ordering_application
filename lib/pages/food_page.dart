@@ -3,6 +3,7 @@ import 'package:food_order_app/components/app_icon.dart';
 import 'package:food_order_app/controllers/tab_controller.dart';
 import 'package:food_order_app/models/cart_item.dart';
 import 'package:food_order_app/models/food.dart';
+import 'package:food_order_app/models/newmodels/additive.dart';
 import 'package:food_order_app/models/newmodels/food.dart';
 import 'package:food_order_app/models/restaurant.dart';
 import 'package:food_order_app/dimensions.dart';
@@ -37,7 +38,6 @@ class CartController extends GetxController{
 
 class FoodPage extends StatefulWidget {
   final FoodModel food;
-  final Map<Addon, bool> selectedAddons = {};
 
   FoodPage({
     super.key,
@@ -51,14 +51,27 @@ class FoodPage extends StatefulWidget {
 }
 
 class _FoodPageState extends State<FoodPage> {
+  late Map<AdditiveModel, bool> selectedAddons = {};
+  @override
+  void initState(){
+    super.initState();
+    selectedAddons = {
+      for(final addon in widget.food.additives) addon: false,
+    };
+  }
+
   // method to add to cart
-  void addToCart(Food food, Map<Addon, bool> selectedAddons) {
+  void addToCart(FoodModel food) {
     final controller = Get.find<CartController>();
     // close the current food page to go back to menu
     //Navigator.pop(context);
 
-    // format the selected addons
-    List<Addon> currentlySelectedAddons = [];
+    
+    final currentlySelectedAddons = selectedAddons.entries
+        .where((entry) => entry.value)
+        .map((entry) => entry.key)
+        .toList();
+
   
     // add to cart
     context.read<Restaurant>().addToCart(food, currentlySelectedAddons, quantity: controller.selectedItems);
@@ -157,12 +170,12 @@ class _FoodPageState extends State<FoodPage> {
                   Text("Leírás", style: TextStyle(fontSize: 24, fontWeight:  FontWeight.w400),), 
                   ExpendableTextWidget(description: widget.food.description), 
                   SizedBox(height: 22,),
-                  Text(widget.selectedAddons.isNotEmpty?"Extra feltétek 💥":" ", 
+                  Text(selectedAddons.isNotEmpty?"Extra feltétek 💥":" ", 
                   style: TextStyle(fontSize: 24, fontWeight:  FontWeight.w400),), 
-                  AddonColumn(addons: widget.selectedAddons,
+                  AddonColumn(addons: selectedAddons,
                   onSelectedChanged: (addon, selected){
                     setState(() {
-                        widget.selectedAddons[addon] = selected;
+                        selectedAddons[addon] = selected;
                     });
                   },), 
                   ],
@@ -224,7 +237,7 @@ class _FoodPageState extends State<FoodPage> {
                 if(controller.selectedItems == 0){
                    snackbarString =  'Adj meg egy mennyiséget! 🙄';
                 } else {
-                   //addToCart(widget.food, widget.selectedAddons);
+                   addToCart(widget.food);
                    snackbarString = "${widget.food.title} hozzáadva a kosaradhoz 😋";
                 };
                    showHomeSnackbar(
