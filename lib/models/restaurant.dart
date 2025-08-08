@@ -267,13 +267,7 @@ class Restaurant extends ChangeNotifier {
       return "$price Ft";
     }
 
-    // format list of addons
-    String _formatAddons(List<Addon> addons) {
-      return addons
-          .map((addon) => "${addon.name} (${_formatPrice(addon.price)})")
-          .join(", ");
-    }
- 
+
    
     List<Map<String, dynamic>> addToDatabaseJson() {
       try{

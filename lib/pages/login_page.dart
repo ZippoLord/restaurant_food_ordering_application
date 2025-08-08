@@ -1,12 +1,23 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_order_app/components/custom_button.dart';
+import 'package:food_order_app/components/custom_emailtextfield.dart';
+import 'package:food_order_app/components/custom_passwordtextfield.dart';
 import 'package:food_order_app/components/custom_textfield.dart';
+import 'package:food_order_app/controllers/login_controller.dart';
+import 'package:food_order_app/models/newmodels/login_model.dart';
+import 'package:food_order_app/pages/main_screen.dart';
 import 'package:food_order_app/services/auth/auth_service.dart';
+import 'package:food_order_app/widgets/custom_container.dart';
+import 'package:food_order_app/widgets/custom_login_register_container.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:lottie/lottie.dart';
 
 class LoginPage extends StatefulWidget {
-  final void Function()? onTap;
+  final VoidCallback? onTap;
 
-  const LoginPage({super.key, required this.onTap});
+  const LoginPage({super.key, this.onTap});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -15,26 +26,15 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final LoginController controller = LoginController();
+  final FocusNode passwordFocusNode = FocusNode(); 
 
-  // login method
-  void login() async {
-    // get instance of auth service
-    final authService = AuthService();
-
-    // try logging in
-    try {
-      await authService.loginFirebase(emailController.text, passwordController.text,);
-    }
-
-    // display any errors
-    catch (e) {
-      showDialog(
-        context: context,
-        builder:(context) => AlertDialog(
-          title: Text(e.toString()),
-        ),
-      );
-    }
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    passwordFocusNode.dispose();
+    super.dispose();
   }
 
   void forgotPw() {
@@ -50,21 +50,12 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      body: Center(
-        child: Column(
+      backgroundColor: Colors.red,
+      body: SafeArea(
+        child:  CustomLoginRegisterContainer(
+          containerContent: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // logo
-            Icon(
-              Icons.restaurant_rounded,
-              size: 100,
-              color: Theme.of(context).colorScheme.inversePrimary,
-            ),
-
-            const SizedBox(height: 25),
-
-            // message, app slogan or something like that
             Text(
               "Étel rendelő alkalmazás",
               style: TextStyle(
@@ -72,51 +63,40 @@ class _LoginPageState extends State<LoginPage> {
                 color: Theme.of(context).colorScheme.inversePrimary,
               ),
             ),
+            // logo
+            SizedBox(
+              height: 250,
+              child: Lottie.asset("lib/images/loaders/Food choose.json")),
 
             const SizedBox(height: 25),
 
-            // email textfield
-            MyTextField(
-              controller: emailController,
-              hintText: "Email cím",
-              obscureText: false,
-            ),
-
-            const SizedBox(height: 10),
-
-            // password textfield
-            MyTextField(
-              controller: passwordController,
-              hintText: "Jelszó",
-              obscureText: true,
-            ),
-
-            const SizedBox(height: 10),
+            EmailTextField(controller: emailController),
+            const SizedBox(height: 10), 
+            PasswordTextField(controller: passwordController),
+            const SizedBox(height: 22),
 
             // sign in button
             CustomButton(
-              onTap: login,
+              onTap: (){
+                if(emailController.text.isNotEmpty && passwordController.text.length >= 6){
+                  LoginModel model = LoginModel(email: emailController.text, password: passwordController.text);
+                  String data = loginModelToJson(model);
+                  controller.LoginFunction(data);
+                }
+              },
               text: "Bejelentkezés",
             ),
 
             const SizedBox(height: 25),
 
-            // register button ("Not a member? Register here!")
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  "Még nincs fiókod?",
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.inversePrimary)
-                ),
-
                 const SizedBox(width: 4),
-
                 GestureDetector(
                   onTap: widget.onTap,
                   child: Text(
-                    "Itt regisztrálhatsz!",
+                    "Regisztrálj",
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.inversePrimary,
                       fontWeight: FontWeight.bold,
@@ -126,7 +106,8 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
           ],
-        ), 
+        ),
+      )
       ),
     );
   }

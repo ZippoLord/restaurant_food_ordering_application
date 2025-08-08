@@ -25,9 +25,6 @@ class AdditiveModel {
         price: json["price"],
     );
 
-     @override
-  String toString() => 'Additive(title: $title, price: $price Ft)';
-
     Map<String, dynamic> toJson() => {
         "_id": id,
         "title": title,

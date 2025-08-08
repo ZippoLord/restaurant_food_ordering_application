@@ -2,7 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_order_app/components/custom_drawer_tile.dart';
 import 'package:food_order_app/components/custom_shipping_address.dart';
+import 'package:food_order_app/controllers/login_controller.dart';
 import 'package:food_order_app/models/appUser.dart';
+import 'package:food_order_app/pages/login_page.dart';
 import 'package:food_order_app/pages/settings_page.dart';
 import 'package:food_order_app/services/auth/auth_service.dart';
 import 'package:get/get.dart';
@@ -18,31 +20,16 @@ class MyDrawer extends StatefulWidget {
 
   class MyDrawerState extends State<MyDrawer> {
   String? email;
-  final authService = AuthService();
 
-  void logout() {
-    authService.signOut();
+void logout(){
+  box.erase();
+  Get.offAll(() => LoginPage(), transition: Transition.fade , duration: const Duration(milliseconds: 900)); 
   }
 
  @override
 void initState() {
   super.initState();
-  _loadUserEmail(); 
 }
-
-void _loadUserEmail() async {
-  final user = FirebaseAuth.instance.currentUser;
-  if (user == null) return;
-
-  final appUserData = await authService.getUserData(user.uid);
-  if (appUserData != null) {
-    setState(() {
-      email = appUserData.email;
-    });
-  }
-}
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -108,8 +95,7 @@ void _loadUserEmail() async {
             text: "Kijelentkezés",
             icon: Icons.logout,
             onTap: () {
-              final authService = AuthService();
-              authService.signOut();
+              logout();
             },
           ),
         ),

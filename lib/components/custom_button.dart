@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_order_app/controllers/password_controller.dart';
 
 class CustomButton extends StatelessWidget {
   final Function()? onTap;
@@ -12,6 +13,7 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(PasswordController().password);
     return GestureDetector(
       onTap: onTap,
       child: Container(

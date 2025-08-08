@@ -239,7 +239,7 @@ class _FoodPageState extends State<FoodPage> {
                 } else {
                    addToCart(widget.food);
                    snackbarString = "${widget.food.title} hozzáadva a kosaradhoz 😋";
-                };
+                }
                    showHomeSnackbar(
                     context,
                     snackbarString

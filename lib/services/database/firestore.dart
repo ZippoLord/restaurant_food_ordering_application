@@ -41,48 +41,5 @@ class FirestoreService {
       print("❌ Hiba a mentés során: $e");
     }
   }
- 
-  Future<List<Food>> getAllFoodFromDatabase() async {
-  try {
-    final snapshot = await _firestore.collection('foods').get();
-
-    List<Food> _foods = [];
-
-    for (var doc in snapshot.docs) {
-      final data = doc.data();
-      final String rawImage = data['imagePath'] ?? '';
-      String imageUrl = '';
-
-      if (rawImage.isNotEmpty) {
-        try {
-          imageUrl = await FirebaseStorage.instance.ref(rawImage).getDownloadURL();
-        } catch (e) {
-          print("❌ Hiba az URL lekérésénél: $e");
-        }
-      }
-
-      final food = Food(
-        name: data['name'] ?? '',
-        description: data['description'] ?? '',
-        price: data['price'] ?? 0, 
-        foodCategory: categoryFromString(data['foodCategory'] ?? ''),
-        imagePath: imageUrl,
-        availableAddons: (data['addons'] as List<dynamic>?)
-                ?.map((addon) => Addon.fromJson(addon as Map<String, dynamic>))
-                .toList() ??
-            [],
-      );
-
-      _foods.add(food);
-    }
-
-    print("✅ Sikeres lekérés: ${_foods.length} étel");
-    return _foods;
-  } catch (e) {
-    print("❌ Hiba a getAllFood-nál: $e");
-    return [];
-  }
-}
-
 }
 

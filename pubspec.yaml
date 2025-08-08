@@ -50,6 +50,7 @@ dependencies:
   credit_card_scanner: ^1.0.5
   flutter_dotenv: ^5.2.1
   get: ^4.7.2
+  get_storage: ^2.1.1
   flutter_hooks: ^0.21.2
   skeletonizer: ^2.1.0+1
   lottie: ^3.0.0

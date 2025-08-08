@@ -6,7 +6,6 @@ class Food {
   String? imageUrl;
   final int price;
   final FoodCategory foodCategory;
-  List<Addon>? availableAddons;
 
   Food({
     required this.name,
@@ -15,7 +14,6 @@ class Food {
     this.imageUrl,
     required this.price,
     required this.foodCategory,
-    this.availableAddons,
   });
 
 
@@ -26,10 +24,6 @@ class Food {
       imagePath: json['imagePath'] ?? '',
       price: json['price'] ?? 0,
       foodCategory: categoryFromString(json['foodCategory'] ?? ''),
-      availableAddons: (json['addons'] as List<dynamic>?)
-              ?.map((addon) => Addon.fromJson(addon as Map<String, dynamic>))
-              .toList() ??
-          [],
     ); 
 }
 
@@ -39,13 +33,8 @@ class Food {
     'imagePath': imagePath,
     'price': price,
     'foodCategory': foodCategory.displayName,
-    'addons': availableAddons?.map((a) => a.toJson()).toList()
     };
 
-      @override
-    String toString() {
-      return 'Food(name: $name, price: $price, category: ${foodCategory.name}, addons: ${availableAddons?.map((a) => a.name).join(", ")})';
-    }
   }
 
 // food categories
@@ -83,27 +72,4 @@ extension FoodCategoryExtension on FoodCategory {
         return "Menük";
     }
   }
-}
-
-// food addons
-class Addon {
-  final String? name;
-  final int price;
-  
-  Addon({
-    required this.name,
-    required this.price,
-  });
-
-
-  factory Addon.fromJson(Map<String, dynamic> json){
-    return Addon(
-      name: json['name'] ?? '',
-      price: json['price'] ?? 0
-    );
-  }
-    Map<String, dynamic> toJson() => {
-    'name': name,
-    'price': price,
-  };
 }
