@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_order_app/config.dart';
-import 'package:food_order_app/widgets/custom_restaurant._widget.dart';
+import 'package:food_order_app/widgets/custom_restaurant_widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
 

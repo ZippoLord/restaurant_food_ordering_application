@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_collection_literals, sort_child_properties_last
 import 'dart:convert';
-
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,6 +31,7 @@ class ShippingAddress extends StatefulWidget {
 }
 
 class _ShippingAddressState extends State<ShippingAddress> {
+  Timer? _debounce;
   late final PageController _pageController;
   GoogleMapController? _mapController;
   final locationController = Get.put(UserLocationController());
@@ -57,23 +58,27 @@ class _ShippingAddressState extends State<ShippingAddress> {
   @override
   void dispose() {
     _pageController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
   void _onSearchChange(String query) async {
-    if (query.isNotEmpty) {
-      final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&key=$apiKey&region=HU&language=hu',
-      );
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        setState(() {
-          _placesList = json.decode(response.body)['predictions'];
-        });
+    if(_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500) , () async {
+      if (query.isNotEmpty) {
+        final url = Uri.parse(
+          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&key=$apiKey&region=HU&language=hu',
+        );
+        final response = await http.get(url);
+        if (response.statusCode == 200) {
+          setState(() {
+            _placesList = json.decode(response.body)['predictions'];
+          });
+        }
+      } else {
+        _placesList = [];
       }
-    } else {
-      _placesList = [];
-    }
+    });
   }
 
   void _getPlaceDetails(String placeId) async {

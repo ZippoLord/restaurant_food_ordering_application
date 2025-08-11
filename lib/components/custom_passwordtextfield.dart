@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:food_order_app/controllers/password_controller.dart';
 import 'package:get/get.dart';
+import '../controllers/password_controller.dart';
 
 class PasswordTextField extends StatelessWidget {
   final TextEditingController? controller;
@@ -15,41 +14,37 @@ class PasswordTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final passwordController = Get.put(PasswordController());
+    final passwordController = Get.find<PasswordController>();
 
     return Obx(() => Padding(
       padding: const EdgeInsets.all(12.0),
       child: TextFormField(
-            controller: controller,
-            obscureText: passwordController.password.value,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Adj meg helyes jelszót";
-              }
-              return null;
-            },
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(6),
-              prefixIcon: const Icon(Icons.lock, color: Colors.black),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  passwordController.password.value
-                      ? Icons.visibility_off
-                      : Icons.visibility,
-                  color: Colors.black,
-                ),
-                onPressed: passwordController.togglePasswordVisibility,
-              ),
-              enabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey),
-              ),
-              focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.red),
-              ),
-              hintText: hintText,
-              hintStyle: const TextStyle(color: Colors.black),
+        controller: controller,
+        obscureText: passwordController.password.value,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.all(6),
+          prefixIcon: const Icon(Icons.lock, color: Colors.black),
+          suffixIcon: IconButton(
+            icon: Icon(
+              passwordController.password.value
+                  ? Icons.visibility_off
+                  : Icons.visibility,
+              color: Colors.black,
             ),
+            onPressed: passwordController.togglePasswordVisibility,
           ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12), // nagyobb border radius
+            borderSide: const BorderSide(color: Colors.grey),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Colors.red),
+          ),
+          hintText: hintText,
+          hintStyle: const TextStyle(color: Colors.black),
+        ),
+      ),
     ));
   }
 }

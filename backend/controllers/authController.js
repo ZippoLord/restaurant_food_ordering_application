@@ -11,30 +11,34 @@ module.exports ={
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
 
         if(!emailRegex.test(req.body.email)){
-            return res.status(400).json({status: false, message: "Email is not valid"})
+            return res.status(400).json({status: false, message: "Az email nem megfelelő formátumú"})
         }
 
         const minPasswordLength = 6;
         if(req.body.password.length < minPasswordLength){
-            return res.status(400).json({status: false, message: "Password should be at least "+ minPasswordLength+" characters long"}) 
+            return res.status(400).json({status: false, message: "A jelszónak legalább"+ minPasswordLength+" karakternek kell lennie"}) 
         }
 
         try {
             const emailExist = await User.findOne({email: req.body.email});
 
             if(emailExist){
-            return res.status(400).json({status: false, message: "Email already exists"})
+            return res.status(400).json({status: false, message: "Ez az email mar letezik"})
+            }
+
+            if(req.body.password !== req.body.passwordVerification){
+                return res.status(400).json({status: false, message: "A jelszavak nem egyeznek"})                
             }
 
             const newUser = User({
-                username: req.body.username,
                 email: req.body.email,
                 userType: "Client",
                 password: cryptoJS.AES.encrypt(req.body.password, process.env.SECRET).toString(),
+                passwordVerification: cryptoJS.AES.encrypt(req.body.password, process.env.SECRET).toString(),
             })
 
             await newUser.save();
-            return res.status(201).json({status: true, message: "The user is created"})
+            return res.status(201).json({status: true, message: "Sikereses regisztráció"})
         } catch (error) {
             return res.status(500).json({status: false, message:error.message || "Error in the createUser function"})
         }

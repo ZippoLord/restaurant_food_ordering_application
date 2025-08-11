@@ -1,9 +1,9 @@
 import 'package:meta/meta.dart';
 import 'dart:convert';
 
-RegisterModel RegisterModelFromJson(String str) => RegisterModel.fromJson(json.decode(str));
+RegisterModel registerModelFromJson(String str) => RegisterModel.fromJson(json.decode(str));
 
-String RegisterModelToJson(RegisterModel data) => json.encode(data.toJson());
+String registerModelToJson(RegisterModel data) => json.encode(data.toJson());
 
 class RegisterModel {
     final String email;

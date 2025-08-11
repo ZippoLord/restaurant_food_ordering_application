@@ -14,7 +14,7 @@ import 'package:http/http.dart' as http;
 
 
 final box = GetStorage();
-class LoginController extends GetxController {
+class RegisterController extends GetxController {
   RxBool _isLoading = false.obs;
 
   bool get isLoading => _isLoading.value;
@@ -23,31 +23,23 @@ class LoginController extends GetxController {
     _isLoading.value = newState; 
   }
 
-  void loginFunction (String data)  async {
+  void registerFunction (String data)  async {
     setLoading = true;
 
-    Uri url = Uri.parse('$baseURL/api/auth/login');
+    Uri url = Uri.parse('$baseURL/api/auth/register');
     Map<String, String>   headers = {'Content-type' : 'application/json'};
     try {
       var response = await http.post(url,  headers: headers, body: data);
-      if(response.statusCode == 200){
-         LoginResponse data = loginResponseFromJson(response.body);
-         String userId = data.id;
-         String userData = jsonEncode(data);
-
-         box.write(userId, userData);
-         box.write("token", data.userToken);
-         box.write("userId", data.id);
-
+      if(response.statusCode == 201){
          setLoading = false;
-        Get.snackbar("Sikeres bejelentkezés", "Ne hagyd üresen a kosarad", 
+        Get.snackbar("Sikeres regisztráció", "Sikeres regisztráció", 
         colorText: Colors.white, 
         backgroundColor: Colors.blue,);
         Get.offAll(() => MainScreen());
       }
       else{
         var error =apiErrorFromJson(response.body);
-        Get.snackbar("Nem sikerült a bejelentkezés", error.message, colorText: Colors.white, 
+        Get.snackbar("Regisztráció sikertelen", error.message, colorText: Colors.white, 
         backgroundColor: Colors.redAccent,); //valami jobb szin
       }
     } catch (e) {

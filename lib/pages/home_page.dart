@@ -23,9 +23,7 @@ class HomePage extends HookWidget {
     final selectedIndex = useState(0);
 
     if (categories == null) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+        return Center(child: Lottie.asset("lib/images/loaders/Food Carousel.json"));
     }
 
     final tabController = useTabController(initialLength: categories.length);
@@ -34,11 +32,6 @@ class HomePage extends HookWidget {
     });
 
     final selectedCategory = categories[selectedIndex.value];
-
-
-    if(isLoading){
-      Center(child: Lottie.asset("/lib/images/loaders/Food Carousel.json"));
-    }
 
     return Scaffold(
       drawer: const MyDrawer(),
@@ -75,5 +68,6 @@ class HomePage extends HookWidget {
         ),
       ),
     );
+
   }
 }

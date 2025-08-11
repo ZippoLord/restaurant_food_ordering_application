@@ -30,10 +30,12 @@ class EmailTextField extends StatelessWidget {
         decoration: InputDecoration(
           contentPadding: EdgeInsets.all(12.h),
           prefixIcon: const Icon(Icons.email, color: Colors.black),
-          enabledBorder: const OutlineInputBorder(
+          enabledBorder:  OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.r),
             borderSide: BorderSide(color: Colors.grey),
           ),
-          focusedBorder: const OutlineInputBorder(
+          focusedBorder:  OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.r),
             borderSide: BorderSide(color: Colors.red),
           ),
           hintText: hintText,

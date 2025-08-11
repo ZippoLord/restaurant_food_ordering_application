@@ -7,3 +7,11 @@ class PasswordController extends GetxController {
     password.value = !password.value;
   }
 }
+
+class PasswordVerificationController extends GetxController {
+  var password = true.obs;
+
+  void togglePasswordVisibility() {
+    password.value = !password.value;
+  }
+}

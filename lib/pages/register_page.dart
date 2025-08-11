@@ -1,145 +1,120 @@
 import 'package:flutter/material.dart';
-import 'package:food_order_app/services/auth/auth_service.dart';
-import 'package:food_order_app/widgets/login_register_snackbar.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+import '../controllers/password_controller.dart';
+import '../controllers/register_controller.dart';
+import '../components/custom_emailtextfield.dart';
+import '../components/custom_passwordtextfield.dart';
+import '../components/custom_passwordverfield.dart';
 import '../components/custom_button.dart';
-import '../components/custom_textfield.dart';
+import '../models/newmodels/register_model.dart';
+import '../widgets/custom_login_register_container.dart';
+import 'login_page.dart';
+import 'package:lottie/lottie.dart';
 
 class RegisterPage extends StatefulWidget {
-  final void Function()? onTap;
-
-  const RegisterPage({
+    final void Function()? onTap;
+   const RegisterPage({
     super.key,
-    required this.onTap,
+    this.onTap,
   });
 
+
   @override
-  State<RegisterPage> createState() => RegisterPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class RegisterPageState extends State<RegisterPage> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
-  // register method
-  void register() async {
-    // get auth service
-    final authService = AuthService();
+class _RegisterPageState extends State<RegisterPage> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final passwordVerificationController = TextEditingController();
+  final RegisterController controller = RegisterController();
 
-    // check if passwords match -> create user
-    if (passwordController.text == confirmPasswordController.text) {
-      // try creating user
-      try {
-        await authService.registrationFirebase(emailController.text, passwordController.text,);
-      }
+  @override
+  void initState() {
+    super.initState();
 
-      // display any errors
-      catch (e) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(e.toString()),
-          ),
-        );
-      }
-    }
+    Get.delete<PasswordController>(force: true);
+    Get.put(PasswordController());
+  }
 
-    // if passwords don't match -> show error
-    else {
-      showLoginRegisterSnackbar('A jelszavak nem egyeznek');
-    }
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    passwordVerificationController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      body: Center(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(20),
+        child: Container(),
+      ),
+      backgroundColor: Colors.red,
+      body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // logo
-            Icon(
-              Icons.restaurant_rounded,
-              size: 100,
-              color: Theme.of(context).colorScheme.inversePrimary,
-            ),
-
-            const SizedBox(height: 25),
-
-            // message ("Create your account!")
-            Text(
-              "Étel rendelő alkalmazás",
-              style: TextStyle(
-                fontSize: 16,
-                color: Theme.of(context).colorScheme.inversePrimary,
+            const Padding(
+              padding: EdgeInsets.all(22.0),
+              child: Text(
+                "Étel rendelő alkalmazás",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
               ),
             ),
-
-            const SizedBox(height: 25),
-
-            // email textfield
-            MyTextField(
-              controller: emailController,
-              hintText: "Email cím",
-              obscureText: false,
-            ),
-
-            const SizedBox(height: 10),
-
-            // password textfield
-            MyTextField(
-              controller: passwordController,
-              hintText: "Jelszó",
-              obscureText: true,
-            ),
-
-            const SizedBox(height: 10),
-
-            // confirm password textfield
-            MyTextField(
-              controller: confirmPasswordController,
-              hintText: "Jelszó megerősítése",
-              obscureText: true,
-            ),
-
-            const SizedBox(height: 10),
-
-            // sign up button
-            CustomButton(
-              onTap: register,
-              text: "Regisztrálás",
-            ),
-
-            const SizedBox(height: 25),
-
-            // login button ("Already have an account? Log in here!")
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Már van fiókod?",
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.inversePrimary)
-                ),
-
-                const SizedBox(width: 4),
-
-                GestureDetector(
-                  onTap: widget.onTap,
-                  child: Text(
-                    "Itt tudsz bejelentkezni!",
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.inversePrimary,
-                      fontWeight: FontWeight.bold,
+            Expanded(
+              child: CustomLoginRegisterContainer(
+                containerContent: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 250,
+                      child: Lottie.asset("lib/images/loaders/Food choose.json"),
                     ),
-                  ),
+                    const SizedBox(height: 25),
+                    EmailTextField(controller: emailController),
+                    const SizedBox(height: 10),
+                    PasswordTextField(controller: passwordController),
+                    const SizedBox(height: 10),
+                    PasswordVerificationTextField(controller: passwordVerificationController),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 12, bottom: 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Get.to(() => const LoginPage());
+                            },
+                            child: Text(
+                              "Bejelentkezés",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.inversePrimary,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    CustomButton(
+                      onTap: () {
+                        RegisterModel model = RegisterModel(
+                          email: emailController.text,
+                          password: passwordController.text,
+                          passwordVerification: passwordVerificationController.text,
+                        );
+                        controller.registerFunction(registerModelToJson(model));
+                      },
+                      text: "Regisztráció",
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ],
-        ), 
+        ),
       ),
     );
   }
