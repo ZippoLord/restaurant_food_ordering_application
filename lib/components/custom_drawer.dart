@@ -1,13 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_order_app/components/custom_drawer_tile.dart';
 import 'package:food_order_app/components/custom_shipping_address.dart';
-import 'package:food_order_app/controllers/login_controller.dart';
-import 'package:food_order_app/models/appUser.dart';
+import 'package:food_order_app/models/newmodels/login_response.dart';
 import 'package:food_order_app/pages/login_page.dart';
 import 'package:food_order_app/pages/settings_page.dart';
-import 'package:food_order_app/services/auth/auth_service.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({super.key});
@@ -20,6 +18,18 @@ class MyDrawer extends StatefulWidget {
 
   class MyDrawerState extends State<MyDrawer> {
   String? email;
+  final box = GetStorage();
+
+LoginResponse? getStoredUser() {
+  String? rawData = box.read("userData");
+  if (rawData != null) {
+    return loginResponseFromJson(rawData);
+  }
+  return null;
+}
+String? getToken() {
+  return box.read("token");
+}
 
 void logout(){
   box.erase();
@@ -33,6 +43,7 @@ void initState() {
 
   @override
   Widget build(BuildContext context) {
+    final user = getStoredUser();
     return Drawer(
   child: SafeArea(
     child: Column(
@@ -51,7 +62,7 @@ void initState() {
               ),
                Padding(
                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 23.0),
-                 child: Text("Felhasználó: ${email ?? ''}", style: TextStyle(fontWeight: FontWeight.w500),),
+                 child: Text("Felhasználó: ${user?.email}", style: TextStyle(fontWeight: FontWeight.w500),),
                ),
               Padding(
                 padding: const EdgeInsets.all(25.0),

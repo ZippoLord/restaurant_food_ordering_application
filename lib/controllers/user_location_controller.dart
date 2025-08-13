@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 class UserLocationController extends GetxController{
   RxBool _isDefault = false.obs;
-  RxInt _tabIndex = 0.obs;
+  final RxInt _tabIndex = 0.obs;
 
   bool get isDefault =>_isDefault.value;
   int get tabIndex => _tabIndex.value;

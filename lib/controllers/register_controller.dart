@@ -1,12 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:food_order_app/constants.dart';
 import 'package:food_order_app/models/newmodels/apiError.dart';
-import 'package:food_order_app/models/newmodels/login_model.dart';
-import 'package:food_order_app/models/newmodels/login_response.dart';
-import 'package:food_order_app/pages/home_page.dart';
+import 'package:food_order_app/pages/login_page.dart';
 import 'package:food_order_app/pages/main_screen.dart';
+import 'package:food_order_app/pages/register_page.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
@@ -34,8 +31,8 @@ class RegisterController extends GetxController {
          setLoading = false;
         Get.snackbar("Sikeres regisztráció", "Sikeres regisztráció", 
         colorText: Colors.white, 
-        backgroundColor: Colors.blue,);
-        Get.offAll(() => MainScreen());
+        backgroundColor: Colors.orangeAccent,);
+        Get.to(() => const LoginPage());
       }
       else{
         var error =apiErrorFromJson(response.body);

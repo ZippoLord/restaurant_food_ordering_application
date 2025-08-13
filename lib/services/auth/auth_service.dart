@@ -1,12 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_auth/firebase_auth.dart' as auth;
-import 'package:flutter/material.dart';
 import 'package:food_order_app/models/appUser.dart';
-import 'package:food_order_app/services/database/firestore.dart';
 import 'package:food_order_app/widgets/login_register_snackbar.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 
 class AuthService {

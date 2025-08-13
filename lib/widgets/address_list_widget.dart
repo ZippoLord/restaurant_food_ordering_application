@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_order_app/controllers/address_controller.dart';
 import 'package:food_order_app/models/address.dart';
+import 'package:food_order_app/models/newmodels/address_model.dart';
 import 'package:food_order_app/widgets/address_tile.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
 class AddressListWidget extends StatefulWidget {
-  final List<Address> addresses;
+  final List<AddressModel> addresses;
 
   const AddressListWidget({super.key, required this.addresses});
 
@@ -48,7 +49,8 @@ class _AddressListWidgetState extends State<AddressListWidget> {
                 ),
                 borderRadius: BorderRadius.circular(20.r),
               ),
-              child: AddressTile(address: address, 
+              child: AddressTile(
+              address: address, 
               isSelected: isSelected, 
               onSelected: () => _handleSelectionChanged(index),),
             ),

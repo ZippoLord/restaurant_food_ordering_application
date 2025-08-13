@@ -34,7 +34,6 @@ module.exports ={
                 email: req.body.email,
                 userType: "Client",
                 password: cryptoJS.AES.encrypt(req.body.password, process.env.SECRET).toString(),
-                passwordVerification: cryptoJS.AES.encrypt(req.body.password, process.env.SECRET).toString(),
             })
 
             await newUser.save();

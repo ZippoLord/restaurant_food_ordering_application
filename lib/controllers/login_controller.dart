@@ -35,14 +35,14 @@ class LoginController extends GetxController {
          String userId = data.id;
          String userData = jsonEncode(data);
 
-         box.write(userId, userData);
+         box.write("userData", userData);
          box.write("token", data.userToken);
          box.write("userId", data.id);
 
          setLoading = false;
         Get.snackbar("Sikeres bejelentkezés", "Ne hagyd üresen a kosarad", 
         colorText: Colors.white, 
-        backgroundColor: Colors.blue,);
+        backgroundColor: Colors.orangeAccent,);
         Get.offAll(() => MainScreen());
       }
       else{

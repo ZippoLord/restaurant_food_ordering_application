@@ -7,10 +7,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:food_order_app/config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:food_order_app/constants.dart';
+import 'package:food_order_app/controllers/login_controller.dart';
 import 'package:food_order_app/controllers/user_location_controller.dart';
 import 'package:food_order_app/controllers/address_controller.dart';
 import 'package:food_order_app/dimensions.dart';
 import 'package:food_order_app/models/address.dart';
+import 'package:food_order_app/models/newmodels/address_model.dart';
+import 'package:food_order_app/models/newmodels/apiError.dart';
+import 'package:food_order_app/models/newmodels/hooks/fetchAddresses.dart';
 import 'package:food_order_app/widgets/address_list_widget.dart';
 import 'package:food_order_app/widgets/home_snackbar.dart';
 import 'package:get/get.dart';
@@ -43,7 +48,6 @@ class _ShippingAddressState extends State<ShippingAddress> {
   List<dynamic> _placesList = [];
   List<dynamic> _selectedPlace = [];
   final apiKey = AppConfig.apiKey;
-  //List<Address> addressList = [];
   int _currentTabIndex = 0;
   final AddressController addressController = Get.put(AddressController());
 
@@ -52,7 +56,9 @@ class _ShippingAddressState extends State<ShippingAddress> {
     super.initState();
     _currentTabIndex = widget.initialPage;
     _pageController = PageController(initialPage: widget.initialPage);
-    addressController.fetchAddresses();
+    final token = box.read("token");
+    final userId = box.read("userId");
+    addressController.fetchAddresses(token, userId);
   }
 
   @override
@@ -333,30 +339,27 @@ class _ShippingAddressState extends State<ShippingAddress> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("Beállítás alapértelmezettnek", style: TextStyle(fontWeight: FontWeight.w600),),
-                          Obx(() => CupertinoSwitch(
+                            Obx(() => CupertinoSwitch(
                             thumbColor: Colors.white,
                             trackColor: Colors.grey[300],
                             value: locationController.isDefault,
                             onChanged: (value) async {
-                              // Get user and docRef here, since you need them for update
-                              final user = FirebaseAuth.instance.currentUser;
-                              if (user == null) return;
-                              final docRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
-
-                              // Set all to false
-                              for (var address in addressController.addressList) {
-                                  address.defaultAddress = false;
-                              }
                               locationController.setisDefault = value;
+                              if (addressController.selectedAddress.value.isEmpty) return;
 
-                              // Save back to Firestore
-                              await docRef.update({
-                                'address': addressController.addressList.map((a) => a.toJson()).toList(),
-                              });
-                              await addressController.fetchAddresses();
-                              addressController.addressList.refresh();
+
+                              final selectedAddress = addressController.addresses.firstWhere(
+                                  (a) => a.addressLine1 == addressController.selectedAddress.value);
+                              final addressId = selectedAddress.id; // feltételezve, hogy van id mező AddressModel-ben
+
+                              if (addressId == null || addressId.isEmpty) {
+                                Get.snackbar("Hiba", "A cím ID hiányzik");
+                                return;
+                              }
+                              await addressController.setDefaultAddress(addressId);
+                              addressController.addresses.refresh();
                             },
-                          ))
+                          )),
                         ],
                       ), 
                     ),
@@ -366,46 +369,24 @@ class _ShippingAddressState extends State<ShippingAddress> {
                     InkWell(
                    splashColor: Colors.red.withOpacity(0.2),
                     onTap: () async {
-                      if(_searchController.text.isNotEmpty && _postalCode.text.isNotEmpty){
-                        final user = FirebaseAuth.instance.currentUser;
-                        if (user == null) return;
-
-                        final docRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
-                        final docSnap = await docRef.get();
-
-                        List<dynamic> addressList = docSnap.data()?['address'] ?? [];
-                        int autoId = 1;
-
-                        if (addressList.isNotEmpty) {
-                          final ids = addressList.map((e) => e['id'] as int).toList();
-                          autoId = ids.reduce((a, b) => a > b ? a : b) + 1; // Get the max id and increment by 1
-                        }
-
-                        if (locationController.isDefault) {
-                          for (var addr in addressList) {
-                            addr['default'] = false;
-                          }
-                        }
-
-                        final newAddress = Address(
-                          id: autoId,
+                      if (_searchController.text.isNotEmpty && _postalCode.text.isNotEmpty) {
+                          final token = box.read("token");  
+                          final userId = box.read("userId");
+                          final newAddress = AddressModel(
+                          userId: userId,
                           addressLine1: _searchController.text,
                           postalCode: _postalCode.text,
                           floorNumber: _floorNumber.text,
                           doorNumber: _doorNumber.text,
                           defaultAddress: locationController.isDefault,
                           latitude: _selectedPosition!.latitude,
-                          longitude: _selectedPosition!.longitude
+                          longitude: _selectedPosition!.longitude,
                         );
-                        addressList.add(newAddress.toJson());
-                        await docRef.update({
-                          'address': addressList,
+                        addressController.addAddress(newAddress, token, userId).then((_) {
+                          _pageController.jumpToPage(2);
                         });
-                        locationController.setTabIndex = 2;
-                        _pageController.jumpToPage(2); 
-                        await addressController.fetchAddresses();
                       }
-                    }, 
+                    },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 12.h),
                       alignment: Alignment.center,
@@ -422,7 +403,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
             ),
             Stack(
               children: [
-                 Obx(() => AddressListWidget(addresses: addressController.addressList.toList())),
+                 Obx(() => AddressListWidget(addresses: addressController.addresses.toList())),
                  Align(
                    alignment: Alignment.bottomCenter,
                    child: Padding(
@@ -433,7 +414,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
                           setState(() {
                             addressController.selectedAddress.value.isEmpty ? 
                             addressController.selectedAddress.value =
-                            addressController.addressList.firstWhere((address) => address.defaultAddress).addressLine1
+                            addressController.addresses.firstWhere((address) => address.defaultAddress).addressLine1
                             : addressController.selectedAddress.value;
                           });
                           showHomeSnackbar(context, "A szállítási cím: ${addressController.selectedAddress.value} 🏠",);

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_order_app/controllers/address_controller.dart';
+import 'package:food_order_app/controllers/login_controller.dart';
 import 'package:food_order_app/models/address.dart';
+import 'package:food_order_app/models/newmodels/address_model.dart';
 import 'package:get/get.dart';
 class AddressTile extends StatelessWidget {
-  final Address address;
+  final AddressModel address;
   final bool isSelected;
   final VoidCallback onSelected;
   final VoidCallback? onAddressDeleted;
@@ -61,7 +63,8 @@ class AddressTile extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () async {
-                  await addressController.deleteAddressById(address.id);
+                  final token = box.read("token");
+                  await addressController.deleteAddressById(address.id, address.userId, token);
                   addressController.selectedAddress.value = '';
                   Navigator.pop(context);
                   onAddressDeleted?.call();

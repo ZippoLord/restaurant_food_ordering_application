@@ -1,14 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:food_order_app/components/custom_shipping_address.dart';
 import 'package:food_order_app/controllers/address_controller.dart';
-import 'package:food_order_app/pages/cart_page.dart';
 import 'package:food_order_app/pages/food_page.dart';
 import 'package:food_order_app/services/auth/auth_gate.dart';
 import 'package:food_order_app/firebase_options.dart';
 import 'package:food_order_app/models/restaurant.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:food_order_app/themes/theme_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -18,6 +17,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
     WidgetsFlutterBinding.ensureInitialized();
+    await GetStorage.init();
     if (Firebase.apps.isEmpty) {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
