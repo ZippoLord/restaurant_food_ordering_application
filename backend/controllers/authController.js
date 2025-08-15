@@ -47,26 +47,26 @@ module.exports ={
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
     if (!emailRegex.test(req.body.email)) {
-        return res.status(400).json({ status: false, message: "Email is not valid" });
+        return res.status(400).json({ status: false, message: "Az email nem megfelelő" });
     }
 
     const minPasswordLength = 6;
     if (!req.body.password || req.body.password.length < minPasswordLength) {
-        return res.status(400).json({ status: false, message: "Password should be at least " + minPasswordLength + " characters long" });
+            return res.status(400).json({status: false, message: "A jelszónak legalább"+ minPasswordLength+" karakternek kell lennie"}) 
     }
 
     try {
         const user = await User.findOne({ email: req.body.email });
         
         if (!user) {
-            return res.status(400).json({ status: false, message: "Account not found" });
+            return res.status(400).json({ status: false, message: "Fiók nem található" });
         }
    
         const decryptedPassword = cryptoJS.AES.decrypt(user.password, process.env.SECRET);
         const converted = decryptedPassword.toString(cryptoJS.enc.Utf8);
 
         if (converted !== req.body.password) {
-            return res.status(400).json({ status: false, message: "Wrong password" });
+            return res.status(400).json({ status: false, message: "Hibás vagy nem megfelelő jelszó" });
         }
 
         const userToken = jwt.sign({
