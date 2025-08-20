@@ -21,7 +21,7 @@ class LoginResponse {
     final DateTime createdAt;
     final DateTime updatedAt;
     final int v;
-    final String address;
+    final String? address; // nullable
     final String userToken;
 
     LoginResponse({
@@ -36,23 +36,23 @@ class LoginResponse {
         required this.createdAt,
         required this.updatedAt,
         required this.v,
-        required this.address,
+        this.address, // nullable
         required this.userToken,
     });
 
     factory LoginResponse.fromJson(Map<String, dynamic> json) => LoginResponse(
         status: json["status"],
         id: json["_id"],
-        username: json["username"],
+        username: json["username"] ?? "",
         email: json["email"],
         verification: json["verification"],
         phone: json["phone"],
         userType: json["userType"],
-        profile: json["profile"],
+        profile: json["profile"] ?? "",
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
-        v: json["__v"],
-        address: json["address"],
+        v: json["__v"] ?? 0,
+        address: json["address"], // null lehet
         userToken: json["userToken"],
     );
 
@@ -68,7 +68,7 @@ class LoginResponse {
         "createdAt": createdAt.toIso8601String(),
         "updatedAt": updatedAt.toIso8601String(),
         "__v": v,
-        "address": address,
+        "address": address, // null is ok
         "userToken": userToken,
     };
 }

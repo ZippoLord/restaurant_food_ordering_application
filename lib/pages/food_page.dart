@@ -42,9 +42,7 @@ class FoodPage extends StatefulWidget {
   FoodPage({
     super.key,
     required this.food,
-  }){
-
-  }
+  });
 
   @override
   State<FoodPage> createState() => _FoodPageState();

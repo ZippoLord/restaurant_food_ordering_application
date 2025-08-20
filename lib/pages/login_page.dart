@@ -43,77 +43,104 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(20),
-        child: Container(),
-      ),
-      backgroundColor: Colors.red,
-      body: SafeArea(
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(22.0),
-              child: Text(
-                "Étel rendelő alkalmazás",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-              ),
+Widget build(BuildContext context) {
+  return Scaffold(
+    resizeToAvoidBottomInset: true, // <-- ez a lényeg
+    appBar: PreferredSize(
+      preferredSize: const Size.fromHeight(20),
+      child: Container(),
+    ),
+    backgroundColor: Colors.red,
+    body: SafeArea(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom, // keyboard miatt
             ),
-            Expanded(
-              child: CustomLoginRegisterContainer(
-                containerContent: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Column(
                   children: [
-                    SizedBox(
-                      height: 250,
-                      child: Lottie.asset("lib/images/loaders/Food choose.json"),
-                    ),
-                    const SizedBox(height: 25),
-                    EmailTextField(controller: emailController),
-                    const SizedBox(height: 10),
-                    PasswordTextField(controller: passwordController),
-                    Padding(
-                       padding: const EdgeInsets.only(right: 12, bottom: 12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Get.to(() => const RegisterPage());
-                            },
-                            child: Text(
-                              "Regisztrálj",
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.inversePrimary,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
+                    const Padding(
+                      padding: EdgeInsets.all(22.0),
+                      child: Text(
+                        "Étel rendelő alkalmazás",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                    CustomButton(
-                      onTap: () {
-                        if (emailController.text.isNotEmpty &&
-                            passwordController.text.length >= 6) {
-                          LoginModel model = LoginModel(
-                            email: emailController.text,
-                            password: passwordController.text,
-                          );
-                          controller.loginFunction(loginModelToJson(model));
-                        }
-                      },
-                      text: "Bejelentkezés",
+                    Expanded(
+                      child: CustomLoginRegisterContainer(
+                        containerContent: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: 250,
+                              child: Lottie.asset(
+                                "lib/images/loaders/Food choose.json",
+                              ),
+                            ),
+                            const SizedBox(height: 25),
+                            EmailTextField(controller: emailController),
+                            const SizedBox(height: 10),
+                            PasswordTextField(controller: passwordController),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                right: 12,
+                                bottom: 12,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      Get.to(() => const RegisterPage());
+                                    },
+                                    child: Text(
+                                      "Regisztrálj",
+                                      style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .inversePrimary,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            CustomButton(
+                              onTap: () {
+                                if (emailController.text.isNotEmpty &&
+                                    passwordController.text.length >= 6) {
+                                  LoginModel model = LoginModel(
+                                    email: emailController.text,
+                                    password: passwordController.text,
+                                  );
+                                  controller
+                                      .loginFunction(loginModelToJson(model));
+                                }
+                              },
+                              text: "Bejelentkezés",
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-          ],
-        ),
+          );
+        },
       ),
-    );
+    ),
+  );
   }
 }
                     

@@ -29,8 +29,10 @@ module.exports ={
             if(req.body.password !== req.body.passwordVerification){
                 return res.status(400).json({status: false, message: "A jelszavak nem egyeznek"})                
             }
-
+            
+            const [username] = req.body.email.split('@');
             const newUser = User({
+                username: username || "", 
                 email: req.body.email,
                 userType: "Client",
                 password: cryptoJS.AES.encrypt(req.body.password, process.env.SECRET).toString(),
@@ -77,7 +79,7 @@ module.exports ={
 
         const { password, ...others } = user._doc;
         
-        return res.status(200).json({ status: true, ...others, userToken });
+        return res.status(200).json({ status: true, ...others,  address: user.address ? user.address.toString() : "",  userToken });
 
     } catch (error) {
         console.error("loginUser error:", error); 

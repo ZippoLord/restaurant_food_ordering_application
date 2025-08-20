@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_order_app/components/custom_cart_tile.dart';
+import 'package:food_order_app/components/custom_forward_icon.dart';
 import 'package:food_order_app/components/custom_shipping_address.dart';
 import 'package:food_order_app/controllers/address_controller.dart';
 import 'package:food_order_app/models/restaurant.dart';
 import 'package:food_order_app/pages/address_picker_page.dart';
+import 'package:food_order_app/pages/payment_method_page.dart';
 import 'package:food_order_app/pages/payment_page.dart';
 import 'package:food_order_app/widgets/custom_container.dart';
 import 'package:get/get.dart';
@@ -173,16 +175,13 @@ class CartPage extends StatelessWidget {
                                           .isNotEmpty
                                       ? TextButton(
                                         onPressed: () {
-                                          Navigator.pop(context); // Close dialog
-                                          // Navigate to address picker
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => PaymentPage(),
-                                            ),
-                                          );
+                                         Get.to(() => const PaymentMethodPage());
                                         },
-                                        child: Icon(Icons.arrow_forward_ios, color: Colors.deepOrange, size: 20.h,),
+                                        child:const Icon(
+                                          Icons.arrow_forward_ios,
+                                          size: 25,
+                                          color: Colors.deepOrange,
+                                        ),
                                       )
                                       : Container(),
                                 ],
