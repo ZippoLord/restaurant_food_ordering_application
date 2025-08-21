@@ -84,10 +84,10 @@ class AddressController extends GetxController {
         }
       }
     
-    Future<void> deleteAddressById(id, userId, token) async {
+    Future<void> deleteAddressById(addressId, userId, token) async {
       try {
         final response = await http.delete(
-          Uri.parse('$baseURL/api/address/deleteAddress/$id'),
+          Uri.parse('$baseURL/api/address/deleteAddress/$addressId'),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token', 

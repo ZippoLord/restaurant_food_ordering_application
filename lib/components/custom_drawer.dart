@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:food_order_app/components/attention.dart';
+import 'package:food_order_app/components/attention_order.dart';
 import 'package:food_order_app/components/custom_drawer_tile.dart';
 import 'package:food_order_app/components/custom_shipping_address.dart';
+import 'package:food_order_app/controllers/address_controller.dart';
+import 'package:food_order_app/controllers/login_controller.dart';
 import 'package:food_order_app/models/newmodels/login_response.dart';
 import 'package:food_order_app/pages/login_page.dart';
 import 'package:food_order_app/pages/settings_page.dart';
@@ -19,6 +23,8 @@ class MyDrawer extends StatefulWidget {
   class MyDrawerState extends State<MyDrawer> {
   String? email;
   final box = GetStorage();
+  final AddressController addressController = Get.put(AddressController());
+  final LoginController userController = Get.put(LoginController());
 
 LoginResponse? getStoredUser() {
   String? rawData = box.read("userData");
@@ -27,8 +33,12 @@ LoginResponse? getStoredUser() {
   }
   return null;
 }
-String? getToken() {
+String getToken() {
   return box.read("token");
+}
+
+String getUserId() {
+  return box.read("userId");
 }
 
 void logout(){
@@ -39,6 +49,8 @@ void logout(){
  @override
 void initState() {
   super.initState();
+  addressController.fetchAddresses(getToken(), getUserId());
+  userController.fetchUserData(getToken());
 }
 
   @override
@@ -75,15 +87,29 @@ void initState() {
                 icon: Icons.home,
                 onTap: () => Navigator.pop(context),
               ),
-               CustomDrawerTile(
-                text: "Szállítási cím",
-                icon: Icons.delivery_dining,
-                onTap: () {
-                  Get.to(() => const ShippingAddress(),
-                  transition: Transition.rightToLeft,
-                  duration: const Duration(milliseconds: 400));
-                },
-              ),
+              Obx(() {
+              if (addressController.addresses.isNotEmpty && userController.firstSetup.value) {
+                return CustomDrawerTile(
+                  text: "Szállítási cím",
+                  icon: Icons.delivery_dining,
+                  onTap: () {
+                    Get.to(() => const ShippingAddress(),
+                        transition: Transition.rightToLeft,
+                        duration: const Duration(milliseconds: 400));
+                  },
+                );
+              } else {
+                return AttentionOrder(
+                  text: "Szállítási cím",
+                  icon: Icons.delivery_dining,
+                  onTap: () {
+                    Get.to(() => const ShippingAddress(),
+                        transition: Transition.rightToLeft,
+                        duration: const Duration(milliseconds: 400));
+                  },
+                );
+              }
+            }),
               CustomDrawerTile(
                 text: "Beállítások",
                 icon: Icons.settings,

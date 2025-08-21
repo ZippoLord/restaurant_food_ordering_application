@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_order_app/models/food.dart';
-import 'package:food_order_app/models/newmodels/category.dart';
+import 'package:food_order_app/models/newmodels/category_model.dart';
 import 'package:food_order_app/models/newmodels/hooks/fetchCategories.dart';
 import 'package:food_order_app/widgets/skeleton.dart';
 

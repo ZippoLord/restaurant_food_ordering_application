@@ -1,10 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:food_order_app/components/custom_button.dart';
+import 'package:food_order_app/controllers/address_controller.dart';
+import 'package:food_order_app/controllers/order_controller.dart';
 import 'package:food_order_app/models/restaurant.dart';
 import 'package:food_order_app/pages/cart_page.dart';
 import 'package:get/get.dart';
 import 'package:pay/pay.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 
 class PaymentMethodPage extends StatefulWidget {
@@ -12,19 +15,32 @@ class PaymentMethodPage extends StatefulWidget {
 
   @override
   State<PaymentMethodPage> createState() => _PaymentMethodPageState();
-
 }
-
-final Future<PaymentConfiguration> _googlePayConfigFuture =
-    PaymentConfiguration.fromAsset('lib/assets/google_pay.json');
-
 
 class _PaymentMethodPageState extends State<PaymentMethodPage> {
   int _type = 1;
-  void _handleSelect(int type) => setState(() {
-    _type = type;
-  });
+  PaymentConfiguration? _googlePayConfig;
+  final AddressController addressController = Get.put(AddressController());
 
+
+  void _handleSelect(int type) => setState(() {
+        _type = type;
+      });
+
+  @override
+  void initState() {
+    super.initState();
+    if (!Platform.isIOS) {
+      _loadGooglePayConfig();
+    }
+  }
+
+  Future<void> _loadGooglePayConfig() async {
+    final config = await PaymentConfiguration.fromAsset('google_pay.json');
+    setState(() {
+      _googlePayConfig = config;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +48,11 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
     final total = restaurant.getTotalPrice();
     Size size = MediaQuery.of(context).size;
 
-    Widget paymentCard({required int type, required String title, required Widget logo}) {
+    Widget paymentCard(
+        {required int type,
+        required String title,
+        required Widget logo,
+        Widget? trailing}) {
       bool selected = _type == type;
       return GestureDetector(
         onTap: () => _handleSelect(type),
@@ -48,26 +68,93 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
               width: selected ? 2 : 0.8,
             ),
             borderRadius: BorderRadius.circular(8),
-            boxShadow: selected
-                ? []
-                : [],
             color: Colors.white,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: selected ? Colors.red : Colors.grey[700],
+              Row(children: [
+                logo,
+                const SizedBox(width: 12),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: selected ? Colors.red : Colors.grey[700],
+                  ),
                 ),
-              ),
-              logo,
+              ]),
+              if (trailing != null) trailing,
             ],
           ),
         ),
+      );
+    }
+
+    Widget? paymentButton;
+    if (_type == 1) {
+      if (Platform.isIOS) {
+        // Apple Pay button (not implemented here, you can add ApplePayButton if needed)
+        paymentButton = Padding(
+          padding: const EdgeInsets.only(top: 16.0),
+          child: Text(
+            "Apple Pay fizetés csak iOS-en elérhető.",
+            style: TextStyle(color: Colors.grey[600]),
+          ),
+        );
+      } else {
+        paymentButton = _googlePayConfig == null
+            ? const CircularProgressIndicator()
+            : GooglePayButton(
+                paymentConfiguration: _googlePayConfig!,
+                paymentItems: [
+                  PaymentItem(
+                    label: 'Kosár',
+                    amount: (total.toInt() + 1200).toStringAsFixed(1),
+                    status: PaymentItemStatus.final_price,
+                  ),
+                ],
+                type: GooglePayButtonType.pay,
+                onPaymentResult: (result) async {
+                  debugPrint("Google Pay result: $result");
+                  
+                  final orderData = {
+                    "userId": GetStorage().read("userId"),
+                    "orderItems": 
+                      [
+                        for (var item in restaurant.cart)
+                          {
+                            "foodId": item.food.id,
+                            "quantity": item.quantity,
+                            "price": item.food.price,
+                            "additives": item.selectedAddons.map((addon) => addon.id).toList(),
+                          }
+                      ],
+                    "orderTotal": total.toInt(),
+                    "Fee": 1200,
+                    "grandTotal": total.toInt() + 1200,
+                    "orderNumber": 1223,
+                    "deliveryAddress": addressController.addresses.first.id,
+                    "paymentMethod": "Google Pay",
+                    "paymentStatus": "Completed",
+                    "deliveryStatus": "Pending",
+                    
+                  };
+                  await placeOrder(orderData);
+                  Get.back();
+                },
+
+                loadingIndicator: const CircularProgressIndicator(),
+              );
+      }
+    } else if (_type == 2) {
+      paymentButton = CustomButton(
+        onTap: () {
+          debugPrint("Visa/MasterCard fizetés (implementáld a logikát)");
+          Get.back();
+        },
+        text: "Fizetés",
       );
     }
 
@@ -90,31 +177,17 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
           child: Column(
             children: [
               const SizedBox(height: 40),
-              Container(child: Platform.isIOS ? 
-                   paymentCard(
-                type: 1,
-                title: "Apple Pay",
-                logo: Row(
-                  children: [
-                    Image.asset(
-                      "lib/images/payment_logos/apple_pay.png",
-                      width: 35,
-                    ),
-                  ],
-                ),
-              )
-               :  
               paymentCard(
                 type: 1,
-                title: "Google Pay",
+                title: Platform.isIOS ? "Apple Pay" : "Google Pay",
                 logo: Image.asset(
-                  "lib/images/payment_logos/google_pay.png",
-                  width: 70,
-                  height: 70,
-                  fit: BoxFit.cover,
+                  Platform.isIOS
+                      ? "lib/images/payment_logos/apple_pay.png"
+                      : "lib/images/payment_logos/google_pay.png",
+                  width: 35,
+                  height: 35,
                 ),
-            ),
-            ),
+              ),
               paymentCard(
                 type: 2,
                 title: "Visa / Master Card",
@@ -132,35 +205,6 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                   ],
                 ),
               ),
-             FutureBuilder<PaymentConfiguration>(
-            future: _googlePayConfigFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done &&
-                  snapshot.hasData) {
-                return GooglePayButton(
-                  paymentConfiguration: snapshot.data!,
-                  paymentItems: const [
-                    PaymentItem(
-                      label: 'Total',
-                      amount: '12.99',
-                      status: PaymentItemStatus.final_price,
-                    ),
-                  ],
-                  type: GooglePayButtonType.pay,
-                  margin: const EdgeInsets.only(top: 15.0),
-                  onPaymentResult: (result) {
-                    debugPrint("Google Pay result: $result");
-                  },
-                  loadingIndicator: const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              } else {
-                return const CircularProgressIndicator();
-              }
-            },
-          )
-          ,
               const SizedBox(height: 55),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -174,7 +218,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                     ),
                   ),
                   Text(
-                    "$total Ft",
+                    "${total.toInt()} Ft",
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
@@ -220,7 +264,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                     ),
                   ),
                   Text(
-                    "${total + 1200} Ft",
+                    "${total.toInt() + 1200} Ft",
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
@@ -229,13 +273,8 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 90),
-              CustomButton(
-                onTap: () {
-                  Get.offAll(() => CartPage());
-                },
-                text: "Fizetes",
-              ),
+              const SizedBox(height: 40),
+              if (paymentButton != null) paymentButton,
             ],
           ),
         ),

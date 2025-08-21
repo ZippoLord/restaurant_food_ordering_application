@@ -1,24 +1,24 @@
 import 'package:food_order_app/constants.dart';
-import 'package:food_order_app/models/newmodels/additive_model.dart';
+import 'package:food_order_app/controllers/login_controller.dart';
+import 'package:food_order_app/models/newmodels/order_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:food_order_app/models/newmodels/apiError.dart';
-import 'package:food_order_app/models/newmodels/category_model.dart';
 import 'package:food_order_app/models/newmodels/hooks/hooks.dart';
 
-FetchHooks  useFetchAdditives(){
-  final additives = useState<List<AdditiveModel>?>(null);
+FetchHooks  useFetchAddresses(){
+  final orders = useState<List<OrderModel>?>(null);
   final isLoading = useState<bool>(false);
   final error = useState<Exception?>(null);
   final apiError = useState<ApiError?>(null);
 
   Future <void> fetchData() async {
     isLoading.value = true;
-
+    final userId = box.read("userId");
     try{
-      final response = await http.get(Uri.parse('$baseURL/api/additives'));
+      final response = await http.get(Uri.parse('$baseURL/api/orders/getUserOrders'));
       if(response.statusCode == 200){
-        additives.value = additiveModelFromJson(response.body);
+        orders.value = orderModelFromJson(response.body);
       }else{
         apiError.value = apiErrorFromJson(response.body);
       }
@@ -39,5 +39,5 @@ FetchHooks  useFetchAdditives(){
     fetchData();
   }
 
-  return FetchHooks(data: additives.value, isLoading: isLoading.value, exception: error.value, refetch: refetch);
+  return FetchHooks(data: orders.value, isLoading: isLoading.value, exception: error.value, refetch: refetch);
 }

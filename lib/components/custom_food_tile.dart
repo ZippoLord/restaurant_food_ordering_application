@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:food_order_app/models/newmodels/food.dart';
+import 'package:food_order_app/models/newmodels/food_model.dart';
 
 class FoodTile extends HookWidget {
   final FoodModel food;

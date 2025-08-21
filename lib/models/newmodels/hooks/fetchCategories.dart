@@ -2,7 +2,7 @@ import 'package:food_order_app/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:food_order_app/models/newmodels/apiError.dart';
-import 'package:food_order_app/models/newmodels/category.dart';
+import 'package:food_order_app/models/newmodels/category_model.dart';
 import 'package:food_order_app/models/newmodels/hooks/hooks.dart';
 
 FetchHooks  useFetchCategories(){

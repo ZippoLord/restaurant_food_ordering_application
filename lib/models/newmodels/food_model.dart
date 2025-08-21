@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:food_order_app/models/newmodels/additive.dart';
+import 'package:food_order_app/models/newmodels/additive_model.dart';
 
 List<FoodModel> foodModelFromJson(String str) {
   final decoded = json.decode(str) as List<dynamic>;

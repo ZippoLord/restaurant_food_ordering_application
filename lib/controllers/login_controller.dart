@@ -16,7 +16,7 @@ import 'package:http/http.dart' as http;
 final box = GetStorage();
 class LoginController extends GetxController {
   RxBool _isLoading = false.obs;
-
+  RxBool firstSetup = false.obs;
   bool get isLoading => _isLoading.value;
 
   set setLoading(bool newState){
@@ -54,4 +54,31 @@ class LoginController extends GetxController {
       print(e);
     }
   }
+
+  Future<void> fetchUserData(String token) async {
+  Uri url = Uri.parse('$baseURL/api/users/');
+  Map<String, String> headers = {
+    'Content-type': 'application/json',
+    'Authorization': 'Bearer $token',
+  };
+
+  try {
+    var response = await http.get(url, headers: headers);
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+
+      // állítsd be az Rx változót
+      firstSetup.value = jsonData['firstSetup'] ?? false;
+
+      // ha kell tárolni:
+      box.write("firstSetup", firstSetup.value);
+
+    } else {
+      print("fetchUserData error: ${response.body}");
+    }
+  } catch (e) {
+    print("fetchUserData exception: $e");
+  }
+}
+
 }

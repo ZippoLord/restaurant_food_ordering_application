@@ -32,13 +32,16 @@ class HomePage extends HookWidget {
     });
 
     final selectedCategory = categories[selectedIndex.value];
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
 
     return Scaffold(
-      drawer: const MyDrawer(),
+      key: _scaffoldKey,
+      drawer: MyDrawer(),
       backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(120),
-        child: const CustomAppBar(),
+      preferredSize: const Size.fromHeight(120),
+      child: CustomAppBar(scaffoldKey: _scaffoldKey), 
       ),
       body: SafeArea(
         child: CustomContainer(

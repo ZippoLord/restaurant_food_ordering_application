@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_order_app/models/food.dart';
-import 'package:food_order_app/models/newmodels/food.dart';
+import 'package:food_order_app/models/newmodels/food_model.dart';
 
 class QuantitySelector extends StatelessWidget {
   final int quantity;

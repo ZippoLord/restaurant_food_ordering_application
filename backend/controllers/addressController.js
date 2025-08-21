@@ -20,7 +20,11 @@ module.exports ={
             await Address.updateMany({userId: req.user.id}, {defaultAddress: false})
 
             await newAddress.save();
-            await User.findByIdAndUpdate(req.user.id, { address: newAddress._id });
+            await User.findByIdAndUpdate(req.user.id, 
+                {
+                $set: {firstSetup: true},    
+                $push: { address: newAddress._id }
+            }, {new: true});
             res.status(201).json({status: true, message: "Address added successfully"});
         } catch (error) {
             res.status(500).json({status: false, message: error.message});
@@ -49,7 +53,12 @@ module.exports ={
 
     removeAddress: async (req,res) =>{
          try {
-            await Address.findOneAndDelete(req.params.id);
+            const addressId = req.params.id;
+            await Address.findOneAndDelete(addressId);
+            await User.updateMany(
+                { address: addressId },        
+                { $pull: { address: addressId } } 
+                );
             res.status(200).json({status: true, message: "Address is deleted"});
         } catch (error) {
             res.status(500).json({status: false, message: "Error in the removeAddress function"});

@@ -1,21 +1,18 @@
-const Order = require('../models/Order')
+const {Order} = require('../models/Order')
 
 module.exports = {
     placeOrder: async (req,res) =>{
         const order = new Order({
-            ...req.body,
-            userId: req.user.id
-        })
+    ...req.body,
+    userId: req.user.id
+    });
+try {
+    await order.save();
+    res.status(200).json({status: true, message: order._id});
+} catch (error) {
+    res.status(500).json({status: false, message: error.message});
+}
 
-        try {
-            await new Order.save();
-
-            const orderId = order._id;
-
-            res.status(200).json({status: true, message: orderId})
-        } catch (error) {
-             res.status(500).json({status: false, message: error.message})
-        }
     },
 
     getUserOrders: async (req,res) =>{

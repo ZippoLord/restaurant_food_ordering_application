@@ -1,46 +1,46 @@
-// To parse this JSON data, do
-//
-//     final loginResponse = loginResponseFromJson(jsonString);
-
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
-LoginResponse loginResponseFromJson(String str) => LoginResponse.fromJson(json.decode(str));
+LoginResponse loginResponseFromJson(String str) =>
+    LoginResponse.fromJson(json.decode(str));
 
-String loginResponseToJson(LoginResponse data) => json.encode(data.toJson());
+String loginResponseToJson(LoginResponse data) =>
+    json.encode(data.toJson());
 
 class LoginResponse {
-    final bool status;
-    final String id;
-    final String username;
-    final String email;
-    final bool verification;
-    final String phone;
-    final String userType;
-    final String profile;
-    final DateTime createdAt;
-    final DateTime updatedAt;
-    final int v;
-    final String? address; // nullable
-    final String userToken;
+  final bool status;
+  final String id;
+  final String username;
+  final String email;
+  final bool verification;
+  final String phone;
+  final String userType;
+  final String profile;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final int v;
+  final String? address; // nullable
+  final String userToken;
 
-    LoginResponse({
-        required this.status,
-        required this.id,
-        required this.username,
-        required this.email,
-        required this.verification,
-        required this.phone,
-        required this.userType,
-        required this.profile,
-        required this.createdAt,
-        required this.updatedAt,
-        required this.v,
-        this.address, // nullable
-        required this.userToken,
-    });
+  final bool firstSetup; 
 
-    factory LoginResponse.fromJson(Map<String, dynamic> json) => LoginResponse(
+  LoginResponse({
+    required this.status,
+    required this.id,
+    required this.username,
+    required this.email,
+    required this.verification,
+    required this.phone,
+    required this.userType,
+    required this.profile,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.v,
+    required this.userToken,
+    this.address,
+    required this.firstSetup, // <-- itt is
+  });
+
+  factory LoginResponse.fromJson(Map<String, dynamic> json) => LoginResponse(
         status: json["status"],
         id: json["_id"],
         username: json["username"] ?? "",
@@ -52,11 +52,12 @@ class LoginResponse {
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
         v: json["__v"] ?? 0,
-        address: json["address"], // null lehet
+        address: json["address"], // null is lehet
         userToken: json["userToken"],
-    );
+        firstSetup: json["firstSetup"] ?? false, // <-- itt töltöd be
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "status": status,
         "_id": id,
         "username": username,
@@ -68,7 +69,8 @@ class LoginResponse {
         "createdAt": createdAt.toIso8601String(),
         "updatedAt": updatedAt.toIso8601String(),
         "__v": v,
-        "address": address, // null is ok
+        "address": address,
         "userToken": userToken,
-    };
+        "firstSetup": firstSetup, // <-- itt visszaadod
+      };
 }

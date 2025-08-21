@@ -1,6 +1,6 @@
 import 'package:food_order_app/models/food.dart';
-import 'package:food_order_app/models/newmodels/additive.dart';
-import 'package:food_order_app/models/newmodels/food.dart';
+import 'package:food_order_app/models/newmodels/additive_model.dart';
+import 'package:food_order_app/models/newmodels/food_model.dart';
 
 class CartItem {
   FoodModel food;
