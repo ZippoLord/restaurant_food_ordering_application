@@ -44,6 +44,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("Selected addres in payment ${addressController.selectedAddressId}");
     final restaurant = Provider.of<Restaurant>(context, listen: false);
     final total = restaurant.getTotalPrice();
     Size size = MediaQuery.of(context).size;
@@ -134,8 +135,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                     "orderTotal": total.toInt(),
                     "Fee": 1200,
                     "grandTotal": total.toInt() + 1200,
-                    "orderNumber": 1223,
-                    "deliveryAddress": addressController.addresses.first.id,
+                    "deliveryAddress": addressController.selectedAddressId.value,
                     "paymentMethod": "Google Pay",
                     "paymentStatus": "Completed",
                     "deliveryStatus": "Pending",

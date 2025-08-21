@@ -1,9 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:food_order_app/controllers/login_controller.dart';
-import 'package:food_order_app/models/newmodels/hooks/fetchAddresses.dart';
-import 'package:food_order_app/models/newmodels/hooks/fetchCategories.dart';
-import 'package:food_order_app/models/newmodels/hooks/hooks.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,9 +15,9 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 class AddressController extends GetxController {
   
-  RxList<Address> addressList = <Address>[].obs;  
   RxList<AddressModel> addresses = <AddressModel>[].obs;
   RxString selectedAddress = ''.obs;
+  RxnString selectedAddressId = RxnString();
   var isLoading = false.obs;
   var error = ''.obs;
 

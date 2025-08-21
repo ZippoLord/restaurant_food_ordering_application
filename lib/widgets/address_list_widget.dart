@@ -19,6 +19,7 @@ class AddressListWidget extends StatefulWidget {
 class _AddressListWidgetState extends State<AddressListWidget> {
   int? _selectedIndex;
   final RxnString _selectedAddress = RxnString();
+  
   final AddressController addressController = Get.find<AddressController>();
  
 
@@ -27,9 +28,10 @@ class _AddressListWidgetState extends State<AddressListWidget> {
     setState(() {
       _selectedIndex = index;
       _selectedAddress.value = widget.addresses[index].addressLine1;
+      addressController.selectedAddressId.value = widget.addresses[index].id;
       addressController.selectedAddress.value = widget.addresses[index].addressLine1;
     });
-   print("Selected Address: ${addressController.selectedAddress.value}");
+   print("Selected Address: ${addressController.selectedAddress.value} ${addressController.selectedAddressId.value}");
   }
 
   @override
