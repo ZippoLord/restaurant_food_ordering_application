@@ -13,7 +13,11 @@ const addressRoute = require('./routes/address')
 const cartRoute = require('./routes/cart')
 const orderRoute = require('./routes/order')
 const additiveRoute = require('./routes/additive')
+const { initSocket } = require('./socket');
 
+const server = require('http').createServer(app);
+
+const io = initSocket(server);
 dotenv.config();
 
 mongoose.connect(process.env.DBCONNECTION).then(() =>console.log("Connected to database"))
@@ -38,4 +42,14 @@ app.use('/api/orders', orderRoute);
 app.use('/api/additives', additiveRoute);
 
 
-app.listen(process.env.PORT, () => console.log(`Server running at http://localhost:${process.env.PORT}`));
+io.on("connection", (socket) => {
+    
+    socket.on("orderUpdated", (order) => {
+        io.emit("orderUpdated", order);
+        
+    });
+});
+
+
+module.exports.io = io;
+server.listen(process.env.PORT, () => console.log(`Server running at http://localhost:${process.env.PORT}`));

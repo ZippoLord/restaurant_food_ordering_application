@@ -1,8 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:food_order_app/components/custom_button.dart';
+import 'package:food_order_app/components/modal_bottom_sheet.dart';
+import 'package:food_order_app/components/user_orders.dart';
 import 'package:food_order_app/controllers/address_controller.dart';
 import 'package:food_order_app/controllers/order_controller.dart';
+import 'package:food_order_app/controllers/tab_controller.dart';
 import 'package:food_order_app/models/restaurant.dart';
 import 'package:food_order_app/pages/cart_page.dart';
 import 'package:get/get.dart';
@@ -21,7 +24,6 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
   int _type = 1;
   PaymentConfiguration? _googlePayConfig;
   final AddressController addressController = Get.put(AddressController());
-
 
   void _handleSelect(int type) => setState(() {
         _type = type;
@@ -142,7 +144,34 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                     
                   };
                   await placeOrder(orderData);
-                  Get.back();
+                  final orderNumber = await getLastOrderNumber();
+                    if (orderNumber != null) {
+                      print("Az utolsó rendelés száma: $orderNumber");
+                    }
+                  restaurant.clearCart();
+                  Navigator.pop(context);
+                    final tabController = Get.find<currentTabController>();
+                    tabController.setTabIndex = 2;
+                    showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent, 
+                    enableDrag: false,
+                    builder: (context) {
+                      return FractionallySizedBox(
+                        heightFactor: 0.75, 
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20), 
+                            topRight: Radius.circular(20),
+                          ),
+                          child: Material(
+                            child:  ModalBottomSheet(orderNumber: orderNumber), 
+                          ),
+                        ),
+                      );
+                    },
+                  );
                 },
 
                 loadingIndicator: const CircularProgressIndicator(),
@@ -152,7 +181,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
       paymentButton = CustomButton(
         onTap: () {
           debugPrint("Visa/MasterCard fizetés (implementáld a logikát)");
-          Get.back();
+          //Get.back();
         },
         text: "Fizetés",
       );
@@ -209,33 +238,33 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                   Text(
                     "Kosar: ",
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
-                      color: Colors.grey,
+                      color: Theme.of(context).colorScheme.inversePrimary,
                     ),
                   ),
                   Text(
                     "${total.toInt()} Ft",
-                    style: const TextStyle(
+                    style:  TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black,
+                      color: Theme.of(context).colorScheme.inversePrimary,
                     ),
                   ),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children:  [
                   Text(
                     "Szallitasi dij: ",
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
-                      color: Colors.grey,
+                       color: Theme.of(context).colorScheme.inversePrimary,
                     ),
                   ),
                   Text(
@@ -243,7 +272,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black,
+                       color: Theme.of(context).colorScheme.inversePrimary,
                     ),
                   ),
                 ],
@@ -255,12 +284,12 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                   Text(
                     "Vegosszeg: ",
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
-                      color: Colors.grey,
+                       color: Theme.of(context).colorScheme.inversePrimary,
                     ),
                   ),
                   Text(

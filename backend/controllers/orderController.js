@@ -1,4 +1,5 @@
 const {Order} = require('../models/Order')
+const { getIO } = require("../socket");
 
 
 async function generateUniqueOrderNumber() {
@@ -55,4 +56,34 @@ module.exports = {
             res.status(500).json({status: false, message: error.message})
         }
     },
+    
+
+
+patchUserOrder: async (req,res) =>{
+  try {
+    const { status } = req.body;
+
+    const order = await Order.findByIdAndUpdate(
+      req.params.id,
+      { deliveryStatus: status },
+      { new: true }
+    );
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    getIO().emit("orderUpdated", order); 
+
+    return res.json({
+      status: true,
+      message: "Order status updated",
+      order,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
 }
