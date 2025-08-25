@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-class ModalBottomSheet extends StatelessWidget {
+class ModalBottomSheet extends StatefulWidget {
   final int? orderNumber;
 
   const ModalBottomSheet({super.key, required this.orderNumber});
 
+  @override
+  State<ModalBottomSheet> createState() => _ModalBottomSheetState();
+}
+
+class _ModalBottomSheetState extends State<ModalBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -38,19 +43,33 @@ class ModalBottomSheet extends StatelessWidget {
               width: 80,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-              color: Colors.red,
+                color: Colors.red,
                 border: Border.all(color: Colors.red, width: 2),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Center(child: Text("${orderNumber.toString()}", style: TextStyle(fontSize: 22, color: Colors.white, fontWeight: FontWeight.bold))),
+              child: Center(
+                child: Text(
+                  "${widget.orderNumber}",
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+              ),
             ),
           ),
-
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary
+              ),
               onPressed: () => Navigator.pop(context),
-              child: const Text("Bezár"),
+              child: Text(
+                "Bezár",
+                style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
+              ),
             ),
           ),
           const SizedBox(height: 24),

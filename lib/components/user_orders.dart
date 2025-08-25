@@ -8,6 +8,8 @@ import 'package:food_order_app/dimensions.dart';
 import 'package:food_order_app/models/newmodels/hooks/fetchOrder.dart';
 import 'package:food_order_app/widgets/custom_container.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class UserOrders extends HookWidget {
   const UserOrders({super.key});
@@ -65,7 +67,15 @@ class UserOrders extends HookWidget {
                         .toList();
                     if (pendingOrders.isEmpty) {
                       return Center(
-                        child: Text("Nincsenek függőben lévő rendelések."),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Lottie.asset("lib/images/loaders/Order food.json"),
+                            SizedBox(height: 40,),
+                            Text("Nincsenek függőben lévő rendelések.", style: TextStyle(fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.inversePrimary),),
+                            SizedBox(height: 80,),
+                          ],
+                        ),
                       );
                     }
                     return ListView.builder(
@@ -81,9 +91,38 @@ class UserOrders extends HookWidget {
                                 ? 'Kifizetve'
                                 : 'Fizetés folyamatban'),
                             onTap: () => print(order.toJson()),
+                            onLongPress: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                // QR kód adata: JSON string
+                                final qrData = order.toJson().toString();
+
+                                return AlertDialog(
+                                  title: const Text("Rendelés QR"),
+                                  content: SizedBox(
+                                    width: 250,
+                                    height: 250,
+                                    child: QrImageView(
+                                      data: qrData,
+                                      version: QrVersions.auto,
+                                      size: 200,
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text("Bezár"),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                            }
                           ),
                         );
                       },
+                      
                     );
                   }),
                   // Completed Orders
@@ -92,8 +131,15 @@ class UserOrders extends HookWidget {
                         .where((o) => o.deliveryStatus == 'Delivered')
                         .toList();
                     if (completedOrders.isEmpty) {
-                      return Center(
-                        child: Text("Nincsenek teljesített rendelések."),
+                     return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Lottie.asset("lib/images/loaders/Delivery.json"),
+                            SizedBox(height: 40,),
+                            Text("Nincsenek teljesített rendelések.", style: TextStyle(fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.inversePrimary),),
+                          ],
+                        ),
                       );
                     }
                     return ListView.builder(

@@ -86,5 +86,4 @@ module.exports ={
         return res.status(500).json({ status: false, message: error.message || "Error in the loginUser function" });
     }
 }
-
 }

@@ -5,6 +5,7 @@ import 'package:food_order_app/constants.dart';
 import 'package:food_order_app/models/newmodels/apiError.dart';
 import 'package:food_order_app/models/newmodels/login_model.dart';
 import 'package:food_order_app/models/newmodels/login_response.dart';
+import 'package:food_order_app/pages/admin_page.dart';
 import 'package:food_order_app/pages/home_page.dart';
 import 'package:food_order_app/pages/main_screen.dart';
 import 'package:get/get.dart';
@@ -43,7 +44,12 @@ class LoginController extends GetxController {
         Get.snackbar("Sikeres bejelentkezés", "Ne hagyd üresen a kosarad", 
         colorText: Colors.white, 
         backgroundColor: Colors.orangeAccent,);
-        Get.offAll(() => MainScreen());
+        if(data.userType == "Admin"){
+          Get.offAll(() => AdminPage());
+        }
+        else{
+          Get.offAll(() => MainScreen());
+        }
       }
       else{
         var error =apiErrorFromJson(response.body);

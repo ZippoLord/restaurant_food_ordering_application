@@ -1,5 +1,7 @@
+const { get } = require('mongoose');
 const {Order} = require('../models/Order')
 const { getIO } = require("../socket");
+const jwt = require('jsonwebtoken')
 
 
 async function generateUniqueOrderNumber() {
@@ -28,6 +30,7 @@ module.exports = {
             orderNumber: orderNumber,
         });
         await order.save();
+        getIO().emit("orderUpdated", order);
         res.status(200).json({status: true, message: order._id});
     } catch (error) {
         res.status(500).json({status: false, message: error.message});

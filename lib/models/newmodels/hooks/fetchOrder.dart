@@ -59,7 +59,7 @@ class OrdersController extends GetxController {
   void _setupSocket() {
     socket = IO.io(
       'http://10.0.2.2:3000',
-      <String, dynamic>{
+      {
         'transports': ['websocket'],
         'autoConnect': false,
         'extraHeaders': {'Authorization': 'Bearer $token'},
@@ -68,6 +68,7 @@ class OrdersController extends GetxController {
 
     socket.connect();
     socket.on('connect', (_) => print('Socket connected ✅'));
+    socket.on('disconnect', (_) => print('Socket disconnected ❌'));
 
  socket.on('orderUpdated', (data) {
   final updatedOrder = OrderModel.fromJson(data);
@@ -77,14 +78,16 @@ class OrdersController extends GetxController {
   if (index != -1) {
     // Frissítjük a meglévő rendelést
     orders[index] = updatedOrder;
+    orders.refresh();
   } else {
-    // Ha új és Pending → hozzáadjuk
-    if (updatedOrder.deliveryStatus == "Pending") {
-      orders.add(updatedOrder);
-    }
+    // Mindig hozzáadjuk, ha új
+    orders.add(updatedOrder);
   }
-
 });
+
+    socket.on('orderUpdated', (data) {
+    print("🔔 orderUpdated: $data");
+    });
 
 }
 

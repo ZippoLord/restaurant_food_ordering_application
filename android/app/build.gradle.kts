@@ -26,7 +26,7 @@ android {
         applicationId = "com.example.food_order_app"
 
         // ✅ Kotlin DSL-ben property-ket kell használni
-        minSdk = flutter.minSdkVersion.toInt()
+        minSdk = 23
         targetSdk = flutter.targetSdkVersion.toInt()
 
         versionCode = flutter.versionCode
