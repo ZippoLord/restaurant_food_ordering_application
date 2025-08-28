@@ -8,6 +8,8 @@ import 'package:food_order_app/controllers/order_controller.dart';
 import 'package:food_order_app/controllers/tab_controller.dart';
 import 'package:food_order_app/models/restaurant.dart';
 import 'package:food_order_app/pages/cart_page.dart';
+import 'package:food_order_app/pages/new_card.dart';
+import 'package:food_order_app/pages/payment_with_card.dart';
 import 'package:get/get.dart';
 import 'package:pay/pay.dart';
 import 'package:get_storage/get_storage.dart';
@@ -120,8 +122,6 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                 ],
                 type: GooglePayButtonType.pay,
                 onPaymentResult: (result) async {
-                  debugPrint("Google Pay result: $result");
-                  
                   final orderData = {
                     "userId": GetStorage().read("userId"),
                     "orderItems": 
@@ -181,7 +181,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
       paymentButton = CustomButton(
         onTap: () {
           debugPrint("Visa/MasterCard fizetés (implementáld a logikát)");
-          //Get.back();
+          Get.to(() => const PaymentPage());
         },
         text: "Fizetés",
       );

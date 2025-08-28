@@ -18,13 +18,12 @@ FetchHooks  useFetchCategories(){
       final response = await http.get(Uri.parse('$baseURL/api/category'));
       if(response.statusCode == 200){
         categoryItems.value = categoryModelFromJson(response.body);
+        isLoading.value = false;
       }else{
         apiError.value = apiErrorFromJson(response.body);
       }
     }catch(e){
       error.value = e as Exception;
-    }finally{
-      isLoading.value = false;
     }
   }
 

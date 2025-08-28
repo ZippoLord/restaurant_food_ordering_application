@@ -56,7 +56,6 @@ module.exports ={
     if (!req.body.password || req.body.password.length < minPasswordLength) {
             return res.status(400).json({status: false, message: "A jelszónak legalább"+ minPasswordLength+" karakternek kell lennie"}) 
     }
-
     try {
         const user = await User.findOne({ email: req.body.email });
         
@@ -77,10 +76,8 @@ module.exports ={
             email: user.email
         }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
-        const { password, ...others } = user._doc;
-        
+        const { password, ...others } = user._doc;        
         return res.status(200).json({ status: true, ...others,  address: user.address ? user.address.toString() : "",  userToken });
-
     } catch (error) {
         console.error("loginUser error:", error); 
         return res.status(500).json({ status: false, message: error.message || "Error in the loginUser function" });

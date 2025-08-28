@@ -9,6 +9,7 @@ plugins {
 }
 
 android {
+   
     namespace = "com.example.food_order_app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
@@ -34,10 +35,18 @@ android {
     }
 
     buildTypes {
-        release {
-            signingConfig = signingConfigs.getByName("debug")
+        getByName("release") {
+            isMinifyEnabled = false
+            isShrinkResources = false
+
+            // Ha proguard-ot használnál
+            // proguardFiles(
+            //     getDefaultProguardFile("proguard-android-optimize.txt"),
+            //     "proguard-rules.pro"
+            // )
         }
     }
+
 }
 
 flutter {

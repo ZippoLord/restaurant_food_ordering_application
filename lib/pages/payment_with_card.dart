@@ -4,6 +4,8 @@ import 'package:food_order_app/components/custom_button.dart';
 import 'package:food_order_app/pages/delivery_progress_page.dart';
 import 'package:credit_card_scanner/credit_card_scanner.dart';
 import 'package:food_order_app/pages/payment_method_page.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class PaymentPage extends StatefulWidget {
   const PaymentPage({super.key});
@@ -121,69 +123,74 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     backgroundColor: Colors.transparent,
-    //     foregroundColor: Theme.of(context).colorScheme.inversePrimary,
-    //     title: const Text("Fizetési mód"),
-    //   ),
-    //   body: SingleChildScrollView(
-    //     child: Column(
-    //       children: [
-    //         // credit card widget
-    //         CreditCardWidget(
-    //           cardNumber: cardNumber,
-    //           expiryDate: expiryDate,
-    //           cardHolderName: cardHolderName,
-    //           cvvCode: cvvCode,
-    //           showBackView: isCvvFocused,
-    //           onCreditCardWidgetChange: (p0) {},
-    //         ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text("Fizetési mód"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Get.back();
+          },
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // credit card widget
+            CreditCardWidget(
+              cardNumber: cardNumber,
+              expiryDate: expiryDate,
+              cardHolderName: cardHolderName,
+              cvvCode: cvvCode,
+              showBackView: isCvvFocused,
+              onCreditCardWidgetChange: (p0) {},
+            ),
 
-    //         // scan card button
-    //         Padding(
-    //           padding: const EdgeInsets.symmetric(horizontal: 25.0),
-    //           child: ElevatedButton.icon(
-    //             onPressed: _scanCard,
-    //             icon: const Icon(Icons.camera_alt),
-    //             label: const Text("Kártya beolvasása"),
-    //             style: ElevatedButton.styleFrom(
-    //               backgroundColor: Theme.of(context).colorScheme.surface,
-    //               foregroundColor: Theme.of(context).colorScheme.inversePrimary,
-    //               minimumSize: const Size(double.infinity, 45),
-    //             ),
-    //           ),
-    //         ),
+            // scan card button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: ElevatedButton.icon(
+                onPressed: _scanCard,
+                icon: const Icon(Icons.camera_alt),
+                label: const Text("Kártya beolvasása"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  minimumSize: const Size(double.infinity, 45),
+                ),
+              ),
+            ),
 
-    //         const SizedBox(height: 10),
+            const SizedBox(height: 10),
 
-    //         // credit card form
-    //         CreditCardForm(
-    //           cardNumber: cardNumber,
-    //           expiryDate: expiryDate,
-    //           cardHolderName: cardHolderName,
-    //           cvvCode: cvvCode,
-    //           onCreditCardModelChange: (data) {
-    //             setState(() {
-    //               cardNumber = data.cardNumber;
-    //               expiryDate = data.expiryDate;
-    //               cardHolderName = data.cardHolderName;
-    //               cvvCode = data.cvvCode;
-    //               isCvvFocused = data.isCvvFocused;
-    //             });
-    //           },
-    //           formKey: formKey,
-    //         ),
+            // credit card form
+            CreditCardForm(
+              cardNumber: cardNumber,
+              expiryDate: expiryDate,
+              cardHolderName: cardHolderName,
+              cvvCode: cvvCode,
+              onCreditCardModelChange: (data) {
+                setState(() {
+                  cardNumber = data.cardNumber;
+                  expiryDate = data.expiryDate;
+                  cardHolderName = data.cardHolderName;
+                  cvvCode = data.cvvCode;
+                  isCvvFocused = data.isCvvFocused;
+                });
+              },
+              formKey: formKey,
+            ),
 
-    //         const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-    //         CustomButton(onTap: userTappedPay, text: "Fizetes"),
+            CustomButton(onTap: userTappedPay, text: "Fizetes"),
 
-    //         const SizedBox(height: 25),
-    //       ],
-    //     ),
-    //   ),
-    // );
-    return PaymentMethodPage();
+            const SizedBox(height: 25),
+          ],
+        ),
+      ),
+    );
   }
 }

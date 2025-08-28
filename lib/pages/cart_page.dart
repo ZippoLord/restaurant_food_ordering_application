@@ -7,7 +7,7 @@ import 'package:food_order_app/controllers/address_controller.dart';
 import 'package:food_order_app/models/restaurant.dart';
 import 'package:food_order_app/pages/address_picker_page.dart';
 import 'package:food_order_app/pages/payment_method_page.dart';
-import 'package:food_order_app/pages/payment_page.dart';
+import 'package:food_order_app/pages/payment_with_card.dart';
 import 'package:food_order_app/widgets/custom_container.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';

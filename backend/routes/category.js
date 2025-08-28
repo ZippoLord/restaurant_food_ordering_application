@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const categoryController = require('../controllers/categoryController');
-const {verifyAdmin} = require('../middleware/verifyToken')
+const {verifyAdmin, verifyTokenAuthorization} = require('../middleware/verifyToken')
 
-router.post("/", verifyAdmin, categoryController.createCategory);
-router.get("/", verifyAdmin, categoryController.getAllCategories);
+router.post("/", categoryController.createCategory);
+router.get("/", categoryController.getAllCategories);
 
 module.exports = router;
